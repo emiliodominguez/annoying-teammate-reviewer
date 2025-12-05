@@ -12,17 +12,22 @@
  * - **Multimodal**: Can process images, video, audio (not used here)
  * - **Cost-effective**: Generally cheaper than GPT-4/Claude
  *
- * ## AI Concept: Gemini Model Tiers
+ * ## AI Concept: Gemini Model Tiers (2025)
  *
  * Gemini offers models optimized for different use cases:
- * - **Gemini 1.5 Pro**: Best quality, 1M context, good for complex tasks
- * - **Gemini 1.5 Flash**: Fast and cheap, 1M context, great for reviews
- * - **Gemini 2.0 Flash**: Latest, even faster, improved reasoning
+ * - **Gemini 2.5 Pro**: Best quality, 1M context, complex reasoning & coding
+ * - **Gemini 2.5 Flash**: Fast with controllable thinking budgets
+ * - **Gemini 2.5 Flash-Lite**: High-throughput, cost-effective (GA July 2025)
+ * - **Gemini 2.0 Flash**: Multimodal, 1M context, cost-effective
+ *
+ * Note: Gemini 1.5 models were deprecated April 29, 2025.
  *
  * For code review, Flash models offer the best value:
  * - Fast enough for interactive use
  * - Good code understanding
  * - Very cost-effective
+ *
+ * @see https://ai.google.dev/gemini-api/docs/models
  *
  * ## AI Concept: Why 1M Context Matters
  *
@@ -60,7 +65,7 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
  * - Still very capable for structured tasks
  * - Fastest inference of major models
  */
-const DEFAULT_MODEL = "gemini-2.0-flash";
+const DEFAULT_MODEL = "gemini-2.5-flash";
 
 /**
  * Google AI types.
@@ -151,17 +156,20 @@ export class GeminiProvider implements LLMProvider {
 	/**
 	 * Gets available Gemini models.
 	 *
-	 * ## AI Concept: Gemini Model Naming
+	 * ## AI Concept: Gemini Model Naming (2025)
 	 *
 	 * Gemini models use semantic names:
-	 * - `gemini-1.5-flash` - Fast, efficient
-	 * - `gemini-1.5-pro` - Higher quality
-	 * - `gemini-2.0-flash-exp` - Latest experimental
+	 * - `gemini-2.5-pro` - Best quality, complex reasoning
+	 * - `gemini-2.5-flash` - Fast with thinking budgets
+	 * - `gemini-2.5-flash-lite` - High-throughput, cost-effective
+	 * - `gemini-2.0-flash` - Multimodal, cost-effective
 	 *
-	 * The "-exp" suffix indicates experimental/preview models.
+	 * Note: 1.5 series models were deprecated April 29, 2025.
+	 *
+	 * @see https://ai.google.dev/gemini-api/docs/models
 	 */
 	getAvailableModels(): Promise<string[]> {
-		return Promise.resolve(["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"]);
+		return Promise.resolve(["gemini-2.5-pro", "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]);
 	}
 
 	/**
