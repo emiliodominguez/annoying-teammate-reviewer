@@ -60,19 +60,23 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
 /**
  * Default model for Claude.
  *
- * ## AI Concept: Claude Model Selection
+ * ## AI Concept: Claude Model Selection (2025)
  *
- * Claude has several model tiers:
- * - **claude-3-5-sonnet**: Best balance of speed, quality, and cost
- * - **claude-3-opus**: Highest quality, slower, more expensive
- * - **claude-3-haiku**: Fastest, cheapest, good for simple tasks
+ * Claude 4.x family (current):
+ * - **claude-opus-4-5**: Most capable, industry leader for coding & agents (Nov 2025)
+ * - **claude-sonnet-4-5**: Best coding model, strong for agents ($3/$15 per M tokens)
+ * - **claude-haiku-4-5**: Fast & cheap, near-frontier coding quality ($1/$5 per M tokens)
+ *
+ * Note: Claude 3.x models were deprecated mid-2025.
  *
  * For code review, Sonnet is ideal:
- * - Good enough reasoning for code analysis
+ * - Best-in-class coding capabilities
  * - Fast enough for interactive use
  * - Cost-effective for frequent reviews
+ *
+ * @see https://docs.anthropic.com/en/docs/about-claude/models/overview
  */
-const DEFAULT_MODEL = "claude-sonnet-4-20250514";
+const DEFAULT_MODEL = "claude-sonnet-4-5-20250929";
 
 /**
  * Anthropic API types.
@@ -187,19 +191,25 @@ export class ClaudeProvider implements LLMProvider {
 	/**
 	 * Gets available Claude models.
 	 *
-	 * ## AI Concept: Model Enumeration
+	 * ## AI Concept: Model Enumeration (2025)
 	 *
 	 * Unlike Ollama (where you download specific models), Claude
 	 * models are cloud-hosted. You have access to all models your
 	 * API key is authorized for.
 	 *
-	 * We return a static list of current models. In production,
-	 * you might query the API for available models.
+	 * Current Claude 4.x models:
+	 * - `claude-opus-4-5` - Most capable, best for complex agents
+	 * - `claude-sonnet-4-5` - Best coding model, great balance
+	 * - `claude-haiku-4-5` - Fast & cheap, near-frontier coding
+	 *
+	 * Note: Claude 3.x models deprecated mid-2025.
+	 *
+	 * @see https://docs.anthropic.com/en/docs/about-claude/models/overview
 	 */
 	getAvailableModels(): Promise<string[]> {
 		// Claude models are cloud-hosted, so we return the known models
 		// Your API key may or may not have access to all of these
-		return Promise.resolve(["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "claude-3-opus-20240229"]);
+		return Promise.resolve(["claude-opus-4-5-20251124", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251015"]);
 	}
 
 	/**
