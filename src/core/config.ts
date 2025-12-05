@@ -48,6 +48,34 @@
 export const REVIEWER_NAME = "Emi";
 
 /**
+ * Review strictness level controls how thorough and nitpicky the reviewer is.
+ *
+ * ## AI Concept: Behavioral Tuning via Prompt Modifiers
+ *
+ * Instead of completely rewriting prompts, we can inject "behavior modifiers"
+ * that adjust the AI's focus and tone. This creates configurable personalities
+ * from a single base prompt.
+ */
+export type ReviewStrictnessLevel = "lenient" | "balanced" | "strict";
+
+/**
+ * Current review strictness level.
+ * Can be overridden via environment variable: REVIEW_STRICTNESS=strict
+ */
+export const REVIEW_STRICTNESS_LEVEL: ReviewStrictnessLevel = (
+	["lenient", "balanced", "strict"].includes(process.env.REVIEW_STRICTNESS ?? "") ? process.env.REVIEW_STRICTNESS : "balanced"
+) as ReviewStrictnessLevel;
+
+/**
+ * Descriptions for each strictness level that get injected into prompts.
+ */
+export const STRICTNESS_DESCRIPTIONS: Record<ReviewStrictnessLevel, string> = {
+	lenient: `Focus only on critical bugs, security issues, and broken functionality. Ignore style preferences and minor improvements.`,
+	balanced: `Flag bugs, logic errors, and significant maintainability issues. Mention style issues only if they hurt readability.`,
+	strict: `Thoroughly examine everything - bugs, potential issues, style problems, missing docs, and optimization opportunities.`,
+};
+
+/**
  * Short name for the CLI tool.
  */
 export const TOOL_SHORT_NAME = "annoying-reviewer";

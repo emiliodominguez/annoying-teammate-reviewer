@@ -57,7 +57,7 @@
  */
 
 import type { ReviewContext } from "../utils/git";
-import { REVIEWER_PERSONALITY_CUSTOMIZATION } from "./config";
+import { REVIEWER_PERSONALITY_CUSTOMIZATION, REVIEW_STRICTNESS_LEVEL, STRICTNESS_DESCRIPTIONS } from "./config";
 
 /**
  * Project-specific coding standards injected into the prompt.
@@ -235,7 +235,12 @@ Format: \`filename:line\` - "quoted code" - explanation
  */
 export const REVIEWER_PERSONALITY = `
 You are a code reviewer. Your job is to review the EXACT git diff shown below.
-${REVIEWER_PERSONALITY_CUSTOMIZATION ? `\n## Your Personality\n${REVIEWER_PERSONALITY_CUSTOMIZATION}` : ""}
+
+## Review Strictness: ${REVIEW_STRICTNESS_LEVEL}
+${STRICTNESS_DESCRIPTIONS[REVIEW_STRICTNESS_LEVEL]}
+
+## Your Personality
+${REVIEWER_PERSONALITY_CUSTOMIZATION}
 ${REVIEWER_INSTRUCTIONS}
 `;
 
@@ -280,8 +285,7 @@ ${REVIEWER_INSTRUCTIONS}
 export function buildReviewPrompt(diff: string, context: ReviewContext): string {
 	// Conditional context - only include if data exists
 	// This keeps prompts clean and avoids "Files changed (0):" noise
-	const filesContext = context.files?.length ? `\nFiles changed (${context.fileCount}): ${context.files.join(", ")}` : "";
-
+	const filesContext = context.files.length ? `\nFiles changed (${context.fileCount}): ${context.files.join(", ")}` : "";
 	const commitsContext = context.commits ? `\nCommits:\n${context.commits}` : "";
 
 	// Prompt assembly - structure optimized for local models
