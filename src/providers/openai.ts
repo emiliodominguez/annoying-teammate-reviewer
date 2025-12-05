@@ -12,16 +12,21 @@
  * - **Function calling**: Native support for structured outputs
  * - **Wide ecosystem**: Most tools support OpenAI first
  *
- * ## AI Concept: GPT Model Tiers
+ * ## AI Concept: GPT Model Tiers (2025)
  *
- * OpenAI offers different model tiers:
- * - **GPT-4 Turbo**: Best quality, 128K context, higher cost
- * - **GPT-4o**: Latest model, better for many tasks
- * - **GPT-4o-mini**: Cheaper, faster, good for simple tasks
- * - **GPT-3.5 Turbo**: Legacy, cheaper, less capable
+ * OpenAI offers different model families:
+ * - **GPT-5.1**: Flagship reasoning model, supersedes GPT-5 (Aug 2025)
+ * - **GPT-5 mini/nano**: Faster, affordable reasoning alternatives
+ * - **GPT-4.1**: Best for coding & long-context, 1M token window (Apr 2025)
+ * - **GPT-4.1 mini/nano**: Cheaper variants of 4.1
+ * - **o3/o4-mini**: Specialized reasoning models for math, science, coding
  *
- * For code review, GPT-4 Turbo or GPT-4o is recommended for
- * their strong reasoning and large context windows.
+ * Note: GPT-4.5 Preview deprecated July 2025, GPT-4o largely replaced by GPT-4.1 in API.
+ *
+ * For code review, GPT-4.1 is recommended for its strong coding
+ * performance and massive 1M token context window.
+ *
+ * @see https://platform.openai.com/docs/models
  *
  * ## AI Concept: Chat Completions API
  *
@@ -55,17 +60,19 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
 /**
  * Default model for OpenAI.
  *
- * ## AI Concept: Model Selection for Cost/Quality
+ * ## AI Concept: Model Selection for Cost/Quality (2025)
  *
  * OpenAI pricing varies by model (check platform.openai.com for current rates).
- * Generally: GPT-4 Turbo > GPT-4o > GPT-4o-mini in both cost and capability.
+ * GPT-4.1 offers the best value for coding tasks with its 1M token context.
  *
- * For code review, GPT-4o offers the best value:
- * - Good reasoning for code analysis
- * - Large context for big diffs
- * - Reasonable cost for regular use
+ * For code review, GPT-4.1 offers the best value:
+ * - Strong coding performance (80.1% MMLU, 50.3% GPQA)
+ * - Massive 1M token context for large diffs
+ * - Better instruction following than GPT-4o
+ *
+ * @see https://platform.openai.com/docs/models
  */
-const DEFAULT_MODEL = "gpt-4o";
+const DEFAULT_MODEL = "gpt-4.1";
 
 /**
  * OpenAI API types.
@@ -166,17 +173,22 @@ export class OpenAIProvider implements LLMProvider {
 	/**
 	 * Gets available OpenAI models.
 	 *
-	 * ## AI Concept: Model Access Tiers
+	 * ## AI Concept: Model Access Tiers (2025)
 	 *
 	 * Not all OpenAI API keys have access to all models:
-	 * - Free tier: Limited to GPT-3.5
-	 * - Pay-as-you-go: Access to GPT-4 after first payment
+	 * - Free tier: Limited access
+	 * - Pay-as-you-go: Access to most models
 	 * - Enterprise: All models + higher limits
 	 *
-	 * We return commonly available models.
+	 * Current model families:
+	 * - GPT-5.x: Flagship reasoning (5.1, 5-mini, 5-nano)
+	 * - GPT-4.1: Best for coding (4.1, 4.1-mini, 4.1-nano)
+	 * - o-series: Specialized reasoning (o3, o4-mini)
+	 *
+	 * @see https://platform.openai.com/docs/models
 	 */
 	getAvailableModels(): Promise<string[]> {
-		return Promise.resolve(["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"]);
+		return Promise.resolve(["gpt-5.1", "gpt-5-mini", "gpt-5-nano", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "o4-mini", "o3"]);
 	}
 
 	/**
