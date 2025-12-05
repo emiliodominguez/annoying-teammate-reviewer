@@ -146,10 +146,16 @@ interface OllamaGenerateResponse {
  * ```
  */
 export class OllamaProvider implements LLMProvider {
+	/** Provider identifier used for CLI selection. */
 	readonly name = "ollama";
+
+	/** Human-readable provider name for display. */
 	readonly displayName = "Ollama";
 
+	/** Base URL for the Ollama API server. */
 	private baseUrl: string;
+
+	/** Default model to use when none specified. */
 	private defaultModel: string;
 
 	/**
@@ -281,6 +287,7 @@ export class OllamaProvider implements LLMProvider {
 		const decoder = new TextDecoder();
 		let fullResponse = "";
 
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 		while (true) {
 			const { done, value } = await reader.read();
 

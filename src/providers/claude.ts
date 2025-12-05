@@ -136,11 +136,19 @@ interface AnthropicClient {
  * ```
  */
 export class ClaudeProvider implements LLMProvider {
+	/** Provider identifier used for CLI selection. */
 	readonly name = "claude";
+
+	/** Human-readable provider name for display. */
 	readonly displayName = "Claude";
 
+	/** Anthropic API key for authentication. */
 	private apiKey: string | undefined;
+
+	/** Default model to use when none specified. */
 	private defaultModel: string;
+
+	/** Cached Anthropic client instance. */
 	private client: AnthropicClient | null = null;
 
 	/**
@@ -151,45 +159,6 @@ export class ClaudeProvider implements LLMProvider {
 	constructor(config?: ProviderConfig) {
 		this.apiKey = config?.apiKey ?? process.env.ANTHROPIC_API_KEY;
 		this.defaultModel = config?.defaultModel ?? process.env.CLAUDE_DEFAULT_MODEL ?? DEFAULT_MODEL;
-	}
-
-	/**
-	 * Lazily loads the Anthropic SDK.
-	 *
-	 * ## AI Concept: Dynamic Imports
-	 *
-	 * Using dynamic import() instead of static import:
-	 * - Static: `import Anthropic from '@anthropic-ai/sdk'` - loads at startup
-	 * - Dynamic: `await import('@anthropic-ai/sdk')` - loads on demand
-	 *
-	 * This is crucial for optional dependencies - users who don't want
-	 * Claude don't need to install the SDK.
-	 */
-	private async getClient(): Promise<AnthropicClient> {
-		if (this.client) {
-			return this.client;
-		}
-
-		if (!this.apiKey) {
-			throw new Error("ANTHROPIC_API_KEY environment variable is required for Claude provider");
-		}
-
-		try {
-			// Dynamic import - only loads when actually needed
-			const { default: Anthropic } = await import("@anthropic-ai/sdk");
-
-			this.client = new Anthropic({ apiKey: this.apiKey }) as unknown as AnthropicClient;
-
-			return this.client;
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
-				throw new Error(
-					"@anthropic-ai/sdk is not installed. Run: npm install @anthropic-ai/sdk\n" + "Or use a different provider: --provider ollama",
-				);
-			}
-
-			throw error;
-		}
 	}
 
 	/**
@@ -204,15 +173,15 @@ export class ClaudeProvider implements LLMProvider {
 	 * We only check if key exists here. Invalid keys will fail
 	 * at generation time with a clear error message.
 	 */
-	async checkHealth(): Promise<boolean> {
+	checkHealth(): Promise<boolean> {
 		// Basic check: is the API key configured?
 		if (!this.apiKey) {
-			return false;
+			return Promise.resolve(false);
 		}
 
 		// Optionally: make a lightweight API call to verify the key
 		// For now, we trust that if the key is set, it's probably valid
-		return true;
+		return Promise.resolve(true);
 	}
 
 	/**
@@ -227,10 +196,10 @@ export class ClaudeProvider implements LLMProvider {
 	 * We return a static list of current models. In production,
 	 * you might query the API for available models.
 	 */
-	async getAvailableModels(): Promise<string[]> {
+	getAvailableModels(): Promise<string[]> {
 		// Claude models are cloud-hosted, so we return the known models
 		// Your API key may or may not have access to all of these
-		return ["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "claude-3-opus-20240229"];
+		return Promise.resolve(["claude-sonnet-4-20250514", "claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022", "claude-3-opus-20240229"]);
 	}
 
 	/**
@@ -241,7 +210,7 @@ export class ClaudeProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
+		return models.some((model) => model.includes(modelName) || modelName.includes(model));
 	}
 
 	/**
@@ -301,5 +270,44 @@ export class ClaudeProvider implements LLMProvider {
 	 */
 	getDefaultModel(): string {
 		return this.defaultModel;
+	}
+
+	/**
+	 * Lazily loads the Anthropic SDK.
+	 *
+	 * ## AI Concept: Dynamic Imports
+	 *
+	 * Using dynamic import() instead of static import:
+	 * - Static: `import Anthropic from '@anthropic-ai/sdk'` - loads at startup
+	 * - Dynamic: `await import('@anthropic-ai/sdk')` - loads on demand
+	 *
+	 * This is crucial for optional dependencies - users who don't want
+	 * Claude don't need to install the SDK.
+	 */
+	private async getClient(): Promise<AnthropicClient> {
+		if (this.client) {
+			return this.client;
+		}
+
+		if (!this.apiKey) {
+			throw new Error("ANTHROPIC_API_KEY environment variable is required for Claude provider");
+		}
+
+		try {
+			// Dynamic import - only loads when actually needed
+			const { default: Anthropic } = await import("@anthropic-ai/sdk");
+
+			this.client = new Anthropic({ apiKey: this.apiKey }) as unknown as AnthropicClient;
+
+			return this.client;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
+				throw new Error(
+					"@anthropic-ai/sdk is not installed. Run: npm install @anthropic-ai/sdk\n" + "Or use a different provider: --provider ollama",
+				);
+			}
+
+			throw error;
+		}
 	}
 }
