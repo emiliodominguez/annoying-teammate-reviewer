@@ -209,7 +209,7 @@ export class ClaudeProvider implements LLMProvider {
 	getAvailableModels(): Promise<string[]> {
 		// Claude models are cloud-hosted, so we return the known models
 		// Your API key may or may not have access to all of these
-		return Promise.resolve(["claude-opus-4-5-20251124", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251015"]);
+		return Promise.resolve(["claude-opus-4-5-20251101", "claude-sonnet-4-5-20250929", "claude-haiku-4-5-20251001"]);
 	}
 
 	/**
