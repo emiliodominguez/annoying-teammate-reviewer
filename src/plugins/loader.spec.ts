@@ -368,4 +368,216 @@ describe("Plugin loader module", () => {
 			expect(typeof plugin.providers).toEqual("function");
 		});
 	});
+
+	describe("loadPlugins edge cases", () => {
+		test("should handle empty CLI plugins array", async () => {
+			// Given
+			const emptyArray: string[] = [];
+
+			// When
+			const result = await loadPlugins(emptyArray);
+
+			// Then
+			expect(Array.isArray(result)).toEqual(true);
+		});
+
+		test("should throw descriptive error for missing plugin file", async () => {
+			// Given
+			const nonexistentPath = "./this-plugin-does-not-exist-12345.js";
+
+			// When / Then
+			await expect(loadPlugins([nonexistentPath])).rejects.toThrow(/Failed to load plugin/);
+		});
+
+		test("should include plugin path in error message", async () => {
+			// Given
+			const pluginPath = "./my-missing-plugin.js";
+
+			// When / Then
+			await expect(loadPlugins([pluginPath])).rejects.toThrow(pluginPath);
+		});
+	});
+
+	describe("initializePlugins edge cases", () => {
+		test("should handle empty plugins array", async () => {
+			// Given
+			const emptyPlugins: LoadedPlugin[] = [];
+			const mockContext: PluginContext = {
+				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
+				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
+				registerProvider: () => {},
+			};
+
+			// When / Then - Should not throw
+			await expect(initializePlugins(emptyPlugins, mockContext)).resolves.not.toThrow();
+		});
+
+		test("should register multiple providers from single plugin", async () => {
+			// Given
+			const registeredProviders: unknown[] = [];
+			const mockProviders = [{ name: "provider-1" }, { name: "provider-2" }, { name: "provider-3" }];
+
+			const mockPlugin: Plugin = {
+				name: "multi-provider-plugin",
+				version: "1.0.0",
+				providers: () => mockProviders as any[],
+			};
+
+			const loadedPlugins: LoadedPlugin[] = [
+				{
+					plugin: mockPlugin,
+					source: "npm",
+					location: "test-package",
+				},
+			];
+
+			const mockContext: PluginContext = {
+				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
+				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
+				registerProvider: (provider) => {
+					registeredProviders.push(provider);
+				},
+			};
+
+			// When
+			await initializePlugins(loadedPlugins, mockContext);
+
+			// Then
+			expect(registeredProviders.length).toEqual(3);
+		});
+
+		test("should pass correct context to init hook", async () => {
+			// Given
+			let receivedContext: PluginContext | undefined;
+
+			const mockPlugin: Plugin = {
+				name: "context-test",
+				version: "1.0.0",
+				init: async (ctx) => {
+					receivedContext = ctx;
+				},
+			};
+
+			const loadedPlugins: LoadedPlugin[] = [
+				{
+					plugin: mockPlugin,
+					source: "cli",
+					location: "./test.js",
+				},
+			];
+
+			const expectedConfig = {
+				providerName: "ollama",
+				model: "llama3.2",
+				isQuiet: true,
+				isJson: true,
+			};
+
+			const mockContext: PluginContext = {
+				config: expectedConfig,
+				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
+				registerProvider: () => {},
+			};
+
+			// When
+			await initializePlugins(loadedPlugins, mockContext);
+
+			// Then
+			expect(receivedContext).toBeDefined();
+			expect(receivedContext?.config).toEqual(expectedConfig);
+		});
+
+		test("should stop initialization and throw on first plugin error", async () => {
+			// Given
+			const initOrder: string[] = [];
+
+			const plugins: LoadedPlugin[] = [
+				{
+					plugin: {
+						name: "first",
+						version: "1.0.0",
+						init: async () => {
+							initOrder.push("first");
+						},
+					},
+					source: "npm",
+					location: "pkg-1",
+				},
+				{
+					plugin: {
+						name: "failing",
+						version: "1.0.0",
+						init: async () => {
+							initOrder.push("failing");
+
+							throw new Error("Plugin crashed");
+						},
+					},
+					source: "npm",
+					location: "pkg-2",
+				},
+				{
+					plugin: {
+						name: "third",
+						version: "1.0.0",
+						init: async () => {
+							initOrder.push("third");
+						},
+					},
+					source: "npm",
+					location: "pkg-3",
+				},
+			];
+
+			const mockContext: PluginContext = {
+				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
+				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
+				registerProvider: () => {},
+			};
+
+			// When / Then
+			await expect(initializePlugins(plugins, mockContext)).rejects.toThrow("Failed to initialize plugin failing");
+			expect(initOrder).toEqual(["first", "failing"]); // Third should not run
+		});
+	});
+
+	describe("LoadedPlugin interface", () => {
+		test("should support npm source type", () => {
+			// Given
+			const npmPlugin: LoadedPlugin = {
+				plugin: { name: "npm-test", version: "1.0.0" },
+				source: "npm",
+				location: "annoying-reviewer-plugin-test",
+			};
+
+			// Then
+			expect(npmPlugin.source).toEqual("npm");
+			expect(npmPlugin.location).toContain("annoying-reviewer-plugin");
+		});
+
+		test("should support local source type", () => {
+			// Given
+			const localPlugin: LoadedPlugin = {
+				plugin: { name: "local-test", version: "1.0.0" },
+				source: "local",
+				location: ".annoying-reviewer/plugins/custom.js",
+			};
+
+			// Then
+			expect(localPlugin.source).toEqual("local");
+			expect(localPlugin.location).toContain(".annoying-reviewer");
+		});
+
+		test("should support cli source type", () => {
+			// Given
+			const cliPlugin: LoadedPlugin = {
+				plugin: { name: "cli-test", version: "1.0.0" },
+				source: "cli",
+				location: "./path/to/plugin.js",
+			};
+
+			// Then
+			expect(cliPlugin.source).toEqual("cli");
+		});
+	});
 });

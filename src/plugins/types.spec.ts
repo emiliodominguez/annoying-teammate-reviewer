@@ -343,13 +343,13 @@ describe("Plugin types module", () => {
 			};
 
 			// When
-			await plugin.init!({
+			await plugin.init?.({
 				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
 				registerProvider: () => {},
 			});
 
-			await plugin.beforePrompt!({
+			await plugin.beforePrompt?.({
 				diff: "",
 				reviewContext: { mode: "", branch: "", fileCount: 0 },
 				prompt: "",
@@ -357,7 +357,7 @@ describe("Plugin types module", () => {
 				setPrompt: () => {},
 			});
 
-			await plugin.afterResponse!({
+			await plugin.afterResponse?.({
 				response: "",
 				reviewContext: { mode: "", branch: "", fileCount: 0 },
 				model: "",
@@ -365,7 +365,7 @@ describe("Plugin types module", () => {
 				setResponse: () => {},
 			});
 
-			await plugin.beforeVerdict!({
+			await plugin.beforeVerdict?.({
 				response: "",
 				verdict: "unknown",
 				setVerdict: () => {},
@@ -399,12 +399,12 @@ describe("Plugin types module", () => {
 			};
 
 			// When
-			const commands = plugin.commands!();
+			const commands = plugin.commands?.();
 
 			// Then
-			expect(commands.length).toEqual(2);
-			expect(commands[0].name).toEqual("cmd1");
-			expect(commands[1].name).toEqual("cmd2");
+			expect(commands?.length).toEqual(2);
+			expect(commands?.[0].name).toEqual("cmd1");
+			expect(commands?.[1].name).toEqual("cmd2");
 		});
 	});
 });
