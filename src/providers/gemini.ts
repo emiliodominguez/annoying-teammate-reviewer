@@ -15,9 +15,9 @@
  * ## AI Concept: Gemini Model Tiers (2025)
  *
  * Gemini offers models optimized for different use cases:
- * - **Gemini 2.5 Pro**: Best quality, 1M context, complex reasoning & coding
- * - **Gemini 2.5 Flash**: Fast with controllable thinking budgets
- * - **Gemini 2.5 Flash-Lite**: High-throughput, cost-effective (GA July 2025)
+ * - **Gemini 2.5 Pro**: State-of-the-art thinking model, complex reasoning
+ * - **Gemini 2.5 Flash**: Best price-performance balance
+ * - **Gemini 2.5 Flash-Lite**: Fastest, optimized for cost-efficiency
  * - **Gemini 2.0 Flash**: Multimodal, 1M context, cost-effective
  *
  * Note: Gemini 1.5 models were deprecated April 29, 2025.
@@ -159,9 +159,9 @@ export class GeminiProvider implements LLMProvider {
 	 * ## AI Concept: Gemini Model Naming (2025)
 	 *
 	 * Gemini models use semantic names:
-	 * - `gemini-2.5-pro` - Best quality, complex reasoning
-	 * - `gemini-2.5-flash` - Fast with thinking budgets
-	 * - `gemini-2.5-flash-lite` - High-throughput, cost-effective
+	 * - `gemini-2.5-pro` - State-of-the-art thinking model
+	 * - `gemini-2.5-flash` - Best price-performance
+	 * - `gemini-2.5-flash-lite` - Fastest, cost-efficient
 	 * - `gemini-2.0-flash` - Multimodal, cost-effective
 	 *
 	 * Note: 1.5 series models were deprecated April 29, 2025.
