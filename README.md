@@ -349,7 +349,13 @@ Edit `src/prompts.ts` to adjust:
 
 - `PROJECT_STANDARDS` - Project-specific rules to enforce
 
-### Environment variables
+### Environment Variables
+
+You can configure the tool using environment variables. Copy `.env.example` to `.env` and customize:
+
+```bash
+cp .env.example .env
+```
 
 #### Provider Selection
 
@@ -373,11 +379,11 @@ Edit `src/prompts.ts` to adjust:
 
 #### OpenAI
 
-| Variable               | Description    | Default   |
-| ---------------------- | -------------- | --------- |
-| `OPENAI_API_KEY`       | OpenAI API key | Required  |
-| `OPENAI_BASE_URL`      | OpenAI API URL | Default   |
-| `OPENAI_DEFAULT_MODEL` | Default model  | `gpt-4.1` |
+| Variable               | Description                                   | Default                     |
+| ---------------------- | --------------------------------------------- | --------------------------- |
+| `OPENAI_API_KEY`       | OpenAI API key                                | Required                    |
+| `OPENAI_BASE_URL`      | API URL (for Azure OpenAI or compatible APIs) | `https://api.openai.com/v1` |
+| `OPENAI_DEFAULT_MODEL` | Default model                                 | `gpt-4.1`                   |
 
 #### Gemini (Google)
 
@@ -387,7 +393,13 @@ Edit `src/prompts.ts` to adjust:
 | `GEMINI_API_KEY`       | Alias for above   | -                  |
 | `GEMINI_DEFAULT_MODEL` | Default model     | `gemini-2.5-flash` |
 
-Example usage:
+#### Review Settings
+
+| Variable            | Description                                       | Default  |
+| ------------------- | ------------------------------------------------- | -------- |
+| `REVIEW_STRICTNESS` | Review strictness level (lenient, normal, strict) | `normal` |
+
+#### Example usage
 
 ```bash
 # Use a remote Ollama instance
