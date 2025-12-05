@@ -61,8 +61,16 @@ import type { LoadedPlugin } from "./loader";
  * ```
  */
 export class HookManager {
+	/** Array of active plugins. */
 	private plugins: Plugin[];
+
+	/** Logger for hook output. */
 	private logger: Logger;
+
+	/** Gets the number of loaded plugins. */
+	get pluginCount(): number {
+		return this.plugins.length;
+	}
 
 	/**
 	 * Creates a new HookManager.
@@ -237,13 +245,6 @@ export class HookManager {
 		}
 
 		return commands;
-	}
-
-	/**
-	 * Gets the number of loaded plugins.
-	 */
-	get pluginCount(): number {
-		return this.plugins.length;
 	}
 
 	/**

@@ -2,7 +2,7 @@
  * @fileoverview Tests for the plugin hooks execution engine.
  */
 
-import { beforeEach, describe, expect, jest, test } from "@jest/globals";
+import { beforeEach, describe, expect, test } from "@jest/globals";
 
 import { createEmptyHookManager, HookManager } from "./hooks";
 import type { LoadedPlugin } from "./loader";
@@ -46,7 +46,7 @@ function createLoadedPlugin(plugin: Plugin): LoadedPlugin {
 }
 
 describe("HookManager", () => {
-	let hookManager: HookManager;
+	let _hookManager: HookManager;
 	let mockLogger: Logger & { warnings: string[] };
 	const mockReviewContext: ReviewContext = {
 		mode: "staged changes",
@@ -56,7 +56,7 @@ describe("HookManager", () => {
 
 	beforeEach(() => {
 		mockLogger = createMockLogger();
-		hookManager = new HookManager([], mockLogger);
+		_hookManager = new HookManager([], mockLogger);
 	});
 
 	describe("constructor", () => {
