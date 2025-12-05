@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
 /**
+ * Load environment variables from .env file.
+ * Must be imported before any other modules that use process.env.
+ */
+import "dotenv/config";
+
+/**
  * @fileoverview CLI entry point for the AI Code Reviewer.
  *
  * This is the orchestrator that ties together all the AI components:

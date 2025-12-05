@@ -351,7 +351,7 @@ Edit `src/prompts.ts` to adjust:
 
 ### Environment Variables
 
-You can configure the tool using environment variables. Copy `.env.example` to `.env` and customize:
+You can configure the tool using environment variables. The tool automatically loads a `.env` file from the project root if present. Copy `.env.example` to `.env` and customize:
 
 ```bash
 cp .env.example .env
