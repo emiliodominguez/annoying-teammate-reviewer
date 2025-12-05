@@ -12,7 +12,7 @@
  * - **Multimodal**: Can process images, video, audio (not used here)
  * - **Cost-effective**: Generally cheaper than GPT-4/Claude
  *
- * ## AI Concept: Gemini Model Tiers (2025)
+ * ## Gemini Model Tiers (2025)
  *
  * Gemini offers models optimized for different use cases:
  * - **Gemini 2.5 Pro**: State-of-the-art thinking model, complex reasoning
@@ -29,7 +29,7 @@
  *
  * @see https://ai.google.dev/gemini-api/docs/models
  *
- * ## AI Concept: Why 1M Context Matters
+ * ## Why 1M Context Matters
  *
  * Most LLMs have 4K-200K token limits. Gemini's 1M tokens means:
  * - Review entire repositories, not just diffs
@@ -38,7 +38,7 @@
  *
  * However, for code review, we still use diffs (more focused).
  *
- * ## AI Concept: Google AI vs Vertex AI
+ * ## Google AI vs Vertex AI
  *
  * Google offers Gemini through two APIs:
  * - **Google AI (ai.google.dev)**: Simpler, API key auth, personal use
@@ -54,8 +54,6 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
 
 /**
  * Default model for Gemini.
- *
- * ## AI Concept: Choosing Gemini Models
  *
  * Gemini offers competitive pricing (check ai.google.dev for current rates).
  * Flash models are generally much cheaper than Pro models.
@@ -97,8 +95,6 @@ interface GeminiClient {
 
 /**
  * Gemini LLM provider using Google's Generative AI API.
- *
- * ## AI Concept: Gemini's Unique Streaming
  *
  * Gemini's streaming is slightly different from OpenAI/Claude:
  * - Uses `sendMessageStream` instead of `create` with stream option
@@ -156,8 +152,6 @@ export class GeminiProvider implements LLMProvider {
 	/**
 	 * Gets available Gemini models.
 	 *
-	 * ## AI Concept: Gemini Model Naming (2025)
-	 *
 	 * Gemini models use semantic names:
 	 * - `gemini-2.5-pro` - State-of-the-art thinking model
 	 * - `gemini-2.5-flash` - Best price-performance
@@ -184,8 +178,6 @@ export class GeminiProvider implements LLMProvider {
 	/**
 	 * Streams a response from Gemini.
 	 *
-	 * ## AI Concept: Gemini Streaming
-	 *
 	 * Gemini's streaming is chat-based:
 	 * 1. Create a chat session (even for single turns)
 	 * 2. Call sendMessageStream with the prompt
@@ -194,9 +186,7 @@ export class GeminiProvider implements LLMProvider {
 	 * The chat model maintains conversation history, but we
 	 * start fresh for each review (no history needed).
 	 *
-	 * ## AI Concept: Safety Settings
-	 *
-	 * Gemini has built-in safety filters that can block responses.
+	 * Note: Gemini has built-in safety filters that can block responses.
 	 * For code review (which may include error messages, security
 	 * discussions), we might need to adjust these in production.
 	 */

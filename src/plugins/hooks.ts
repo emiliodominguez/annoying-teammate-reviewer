@@ -3,32 +3,6 @@
  *
  * This module manages the execution of plugin hooks at various points
  * in the review pipeline.
- *
- * ## AI Concept: Hook Execution Model
- *
- * Hooks follow a waterfall pattern where each plugin's hook can
- * modify the context before passing to the next:
- *
- * ```
- * Plugin A: beforePrompt → modifies prompt
- *           ↓
- * Plugin B: beforePrompt → adds more context
- *           ↓
- * Plugin C: beforePrompt → final modifications
- *           ↓
- * [Continue with modified prompt]
- * ```
- *
- * This allows plugins to build on each other's modifications.
- *
- * ## AI Concept: Error Handling in Hooks
- *
- * Hook errors are handled gracefully:
- * - Errors are logged but don't crash the review
- * - Subsequent plugins still run
- * - The core review continues with last known good state
- *
- * This ensures one buggy plugin doesn't break the entire tool.
  */
 
 import type { AfterResponseContext, BeforePromptContext, BeforeVerdictContext, Logger, Plugin, ReviewContext } from "./types";
@@ -36,14 +10,6 @@ import type { LoadedPlugin } from "./loader";
 
 /**
  * Hook manager for executing plugin hooks.
- *
- * ## AI Concept: Centralized Hook Management
- *
- * The HookManager:
- * - Maintains the list of active plugins
- * - Provides methods to execute each hook type
- * - Handles errors gracefully
- * - Ensures hooks run in the correct order
  *
  * ## Usage
  *
@@ -86,15 +52,10 @@ export class HookManager {
 	/**
 	 * Runs the beforePrompt hook for all plugins.
 	 *
-	 * ## AI Concept: Prompt Modification Chain
+	 * ## AI Concept: Prompt Modification
 	 *
-	 * Each plugin can modify the prompt. Changes accumulate:
-	 * ```
-	 * Original: "Review this code"
-	 * Plugin A: "Review this code. Check for security issues."
-	 * Plugin B: "Review this code. Check for security issues. Follow ESLint rules."
-	 * Final:    "Review this code. Check for security issues. Follow ESLint rules."
-	 * ```
+	 * Each plugin can modify the prompt before it's sent to the LLM.
+	 * This allows plugins to inject additional context, rules, or instructions.
 	 *
 	 * @param diff - The diff being reviewed
 	 * @param prompt - Initial prompt
@@ -133,15 +94,6 @@ export class HookManager {
 	/**
 	 * Runs the afterResponse hook for all plugins.
 	 *
-	 * ## AI Concept: Response Processing
-	 *
-	 * Plugins can analyze or transform the LLM response.
-	 * Use cases:
-	 * - Extract metrics
-	 * - Post to external services
-	 * - Transform output format
-	 * - Add additional context
-	 *
 	 * @param response - Raw LLM response
 	 * @param reviewContext - Review context
 	 * @param model - Model used
@@ -177,14 +129,10 @@ export class HookManager {
 	/**
 	 * Runs the beforeVerdict hook for all plugins.
 	 *
-	 * ## AI Concept: Verdict Override
+	 * ## AI Concept: Verdict Customization
 	 *
-	 * Plugins can override the extracted verdict. Use cases:
-	 * - Force block on security issues
-	 * - Custom approval rules
-	 * - Integration with external systems
-	 *
-	 * The last plugin to set a verdict wins.
+	 * Plugins can override the AI's extracted verdict based on custom rules.
+	 * Useful for enforcing security policies or integrating with external systems.
 	 *
 	 * @param response - LLM response
 	 * @param verdict - Initially extracted verdict
@@ -220,11 +168,6 @@ export class HookManager {
 	/**
 	 * Gets all custom commands from plugins.
 	 *
-	 * ## AI Concept: Command Aggregation
-	 *
-	 * Plugins can add CLI commands. This method collects all
-	 * commands from all plugins for registration with Commander.
-	 *
 	 * @returns Array of command definitions with plugin source
 	 */
 	getAllCommands(): { plugin: string; command: ReturnType<NonNullable<Plugin["commands"]>>[number] }[] {
@@ -257,11 +200,6 @@ export class HookManager {
 
 /**
  * Creates a no-op HookManager for when no plugins are loaded.
- *
- * ## AI Concept: Null Object Pattern
- *
- * Instead of checking "if plugins exist" everywhere, we create
- * a HookManager that does nothing. This simplifies the core code.
  *
  * @param logger - Logger instance
  * @returns Empty HookManager

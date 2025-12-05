@@ -12,7 +12,7 @@
  * - **Function calling**: Native support for structured outputs
  * - **Wide ecosystem**: Most tools support OpenAI first
  *
- * ## AI Concept: GPT Model Tiers (2025)
+ * ## GPT Model Tiers (2025)
  *
  * OpenAI offers different model families:
  * - **GPT-4.1**: Best for coding & long-context, 1M token window (Apr 2025)
@@ -27,7 +27,7 @@
  *
  * @see https://platform.openai.com/docs/models
  *
- * ## AI Concept: Chat Completions API
+ * ## Chat Completions API
  *
  * OpenAI uses a "chat completions" format with message roles:
  * ```typescript
@@ -42,7 +42,7 @@
  * The system message sets the AI's behavior, while user/assistant
  * messages form the conversation history.
  *
- * ## AI Concept: SSE Streaming (Same as Claude)
+ * ## SSE Streaming
  *
  * OpenAI also uses Server-Sent Events for streaming:
  * ```
@@ -58,8 +58,6 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
 
 /**
  * Default model for OpenAI.
- *
- * ## AI Concept: Model Selection for Cost/Quality (2025)
  *
  * OpenAI pricing varies by model (check platform.openai.com for current rates).
  * GPT-4.1 offers the best value for coding tasks with its 1M token context.
@@ -107,8 +105,6 @@ interface OpenAIClient {
 
 /**
  * OpenAI LLM provider using the OpenAI API.
- *
- * ## AI Concept: API Compatibility
  *
  * Many services offer "OpenAI-compatible" APIs:
  * - Azure OpenAI
@@ -172,8 +168,6 @@ export class OpenAIProvider implements LLMProvider {
 	/**
 	 * Gets available OpenAI models.
 	 *
-	 * ## AI Concept: Model Access Tiers (2025)
-	 *
 	 * Not all OpenAI API keys have access to all models:
 	 * - Free tier: Limited access
 	 * - Pay-as-you-go: Access to most models
@@ -201,8 +195,6 @@ export class OpenAIProvider implements LLMProvider {
 
 	/**
 	 * Streams a response from OpenAI.
-	 *
-	 * ## AI Concept: Chat Completions Streaming
 	 *
 	 * OpenAI's streaming sends delta updates for each token:
 	 * ```json
@@ -249,9 +241,7 @@ export class OpenAIProvider implements LLMProvider {
 	/**
 	 * Lazily loads the OpenAI SDK.
 	 *
-	 * ## AI Concept: SDK Lazy Loading
-	 *
-	 * Same pattern as Claude - only load the SDK when needed.
+	 * Same pattern as Claude: only load the SDK when needed.
 	 * This keeps the tool lightweight for users who don't use OpenAI.
 	 */
 	private async getClient(): Promise<OpenAIClient> {

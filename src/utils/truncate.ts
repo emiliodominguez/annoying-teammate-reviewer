@@ -1,7 +1,7 @@
 /**
  * @fileoverview Smart diff truncation for fitting within LLM context windows.
  *
- * LLMs have limited "context windows" - the maximum amount of text they can
+ * LLMs have limited "context windows": the maximum amount of text they can
  * process at once. This module helps us fit large diffs into that limit
  * intelligently, rather than just cutting them off arbitrarily.
  *
@@ -27,7 +27,7 @@
  *
  * So we have roughly 2000-3000 tokens for the diff in a 4K context model.
  *
- * ## AI Concept: Quality vs Quantity Tradeoff
+ * ## Truncation Strategies
  *
  * When diffs are too large, we have choices:
  *
@@ -84,10 +84,8 @@ interface FileDiff {
 /**
  * File extension priorities for sorting.
  *
- * ## AI Concept: Content Prioritization
- *
  * Not all files are equally important for code review.
- * We rank by "review value" - how useful is this file to review?
+ * We rank by "review value": how useful is this file to review?
  *
  * **High priority (10-15)**: Source code
  * - This is what you actually want reviewed
@@ -203,10 +201,10 @@ function parseFileDiffs(diff: string): FileDiff[] {
  *
  * ## AI Concept: Preserving Semantic Units
  *
- * A key principle in prompt engineering: keep semantic units intact.
+ * A key principle when working with LLMs: keep semantic units intact.
  *
  * For code review, a "semantic unit" is a complete file diff.
- * Half a file is useless - the LLM can't understand partial context.
+ * Half a file is useless: the LLM can't understand partial context.
  *
  * Our algorithm:
  * 1. Parse diff into complete file diffs
@@ -290,7 +288,7 @@ export interface DiffBatch {
 /**
  * Splits a large diff into multiple batches that each fit within the size limit.
  *
- * ## AI Concept: Iterative Processing
+ * ## AI Concept: Batch Processing for Large Diffs
  *
  * When content exceeds context limits, we can process it in batches.
  * Each batch is a separate LLM call with its own context.
@@ -304,17 +302,10 @@ export interface DiffBatch {
  * Our approach mitigates the cross-file issue by passing previous
  * batch issues to subsequent batches (see prompts.ts buildBatchReviewPrompt).
  *
- * ## AI Concept: Bin Packing
- *
- * This is essentially a bin-packing problem:
- * - Bins = Batches (each with max capacity = maxLength)
- * - Items = File diffs (each with a size)
- * - Goal = Minimize number of bins while fitting all items
- *
- * We use a simple first-fit algorithm:
+ * The batching algorithm:
  * 1. Sort items by priority (code files first)
- * 2. Try to add each item to current bin
- * 3. If doesn't fit, start a new bin
+ * 2. Try to add each item to current batch
+ * 3. If doesn't fit, start a new batch
  *
  * @param diff - The complete git diff
  * @param maxLength - Maximum characters per batch

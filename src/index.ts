@@ -50,8 +50,6 @@ import "dotenv/config";
  *    - Handle format variations gracefully
  *    - Render for human consumption
  *
- * ## AI Concept: Fail Fast with Helpful Errors
- *
  * AI tools have many failure modes: model not available, context too large,
  * API errors, etc. We check prerequisites early and provide actionable guidance.
  */
@@ -75,8 +73,6 @@ import { GeminiProvider } from "./providers/gemini";
 
 /**
  * Configure marked to render markdown for the terminal.
- *
- * ## AI Concept: Output Formatting
  *
  * LLMs output raw text (often markdown). For good UX, we need to render
  * it appropriately for the output medium (terminal, web, etc.).
@@ -191,8 +187,6 @@ async function main(): Promise<void> {
 	// Provider Registration
 	// ═══════════════════════════════════════════════════════════════════════════
 	//
-	// ## AI Concept: Lazy Provider Registration
-	//
 	// Providers are registered at startup but instantiated lazily.
 	// This means we only load the SDK for the provider actually used.
 
@@ -264,8 +258,6 @@ async function main(): Promise<void> {
 	// STEP 3: Handle --export-prompt Flag (No AI needed)
 	// ═══════════════════════════════════════════════════════════════════════════
 	//
-	// ## AI Concept: Prompt Export for Model Comparison
-	//
 	// Exporting the prompt lets users:
 	// - Test with different models (Claude, GPT-4) for comparison
 	// - Debug prompt issues by seeing exactly what's sent
@@ -280,8 +272,6 @@ async function main(): Promise<void> {
 	// ═══════════════════════════════════════════════════════════════════════════
 	// STEP 4: Get the Selected Provider
 	// ═══════════════════════════════════════════════════════════════════════════
-	//
-	// ## AI Concept: Provider Resolution
 	//
 	// The provider is resolved from the registry based on CLI flag or env var.
 	// This decouples the CLI from specific provider implementations.
@@ -300,8 +290,6 @@ async function main(): Promise<void> {
 	// ═══════════════════════════════════════════════════════════════════════════
 	// STEP 5: Check Provider is Available
 	// ═══════════════════════════════════════════════════════════════════════════
-	//
-	// ## AI Concept: Backend Health Checks
 	//
 	// Before doing any work, verify the AI backend is available.
 	// This provides clear errors instead of cryptic failures later.
@@ -351,8 +339,6 @@ async function main(): Promise<void> {
 	// STEP 7: Verify Model is Available
 	// ═══════════════════════════════════════════════════════════════════════════
 	//
-	// ## AI Concept: Model Availability
-	//
 	// Different models have different capabilities. Verifying availability
 	// early prevents confusing errors during generation.
 
@@ -382,8 +368,6 @@ async function main(): Promise<void> {
 	// ═══════════════════════════════════════════════════════════════════════════
 	// STEP 8: Check for Changes to Review
 	// ═══════════════════════════════════════════════════════════════════════════
-	//
-	// ## AI Concept: Empty Input Handling
 	//
 	// Sending empty prompts wastes resources and confuses users.
 	// Check early and provide context-specific guidance.
@@ -461,8 +445,6 @@ async function main(): Promise<void> {
 	// STEP 12: Handle --dry-run Mode
 	// ═══════════════════════════════════════════════════════════════════════════
 	//
-	// ## AI Concept: Dry Run for Debugging
-	//
 	// See what would be sent to the LLM without actually calling it.
 	// Useful for debugging context issues or understanding truncation.
 
@@ -513,8 +495,6 @@ async function main(): Promise<void> {
 	// STEP 13: Generate and Stream the Review
 	// ═══════════════════════════════════════════════════════════════════════════
 	//
-	// ## AI Concept: Single vs Multi-Pass Review
-	//
 	// - Default mode: Single LLM call with smart truncation
 	// - --all mode: Multiple LLM calls, each batch aware of previous issues
 
@@ -529,8 +509,6 @@ async function main(): Promise<void> {
 	// ═══════════════════════════════════════════════════════════════════════════
 	// STEP 14: Handle CI Mode Exit Codes
 	// ═══════════════════════════════════════════════════════════════════════════
-	//
-	// ## AI Concept: AI in CI/CD
 	//
 	// Integrating AI into automated pipelines requires:
 	// - Deterministic exit codes based on AI output

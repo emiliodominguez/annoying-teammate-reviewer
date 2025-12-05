@@ -4,16 +4,6 @@
  * This module defines the interfaces that plugins must implement to extend
  * the reviewer's functionality.
  *
- * ## AI Concept: Plugin Architecture
- *
- * A plugin system allows users to extend functionality without modifying
- * core code. Key benefits:
- *
- * - **Separation of concerns**: Core logic stays simple, extensions are separate
- * - **User customization**: Each team can add their own rules/outputs
- * - **Community ecosystem**: Others can share plugins
- * - **Experimentation**: Try new features without risk to core
- *
  * ## Plugin Capabilities
  *
  * Plugins can:
@@ -22,28 +12,6 @@
  * 3. **Process responses**: Transform or analyze LLM output
  * 4. **Add commands**: Extend the CLI with new actions
  * 5. **Change output**: Format results differently (GitHub comments, etc.)
- *
- * ## AI Concept: Hook-Based Architecture
- *
- * Plugins interact with the review pipeline through "hooks" - functions
- * called at specific points in the workflow:
- *
- * ```
- * [User Input]
- *     ↓
- * beforePrompt ← Hook: plugins can modify the prompt
- *     ↓
- * [LLM Call]
- *     ↓
- * afterResponse ← Hook: plugins can process the response
- *     ↓
- * beforeVerdict ← Hook: plugins can modify verdict extraction
- *     ↓
- * [Output]
- * ```
- *
- * This is similar to how webpack plugins, babel plugins, and
- * many other tools work.
  */
 
 import type { LLMProvider } from "../providers/types";
@@ -142,18 +110,6 @@ export interface BeforeVerdictContext {
 
 /**
  * Command definition for plugins that add CLI commands.
- *
- * ## AI Concept: CLI Extensibility
- *
- * Plugins can add new commands to the CLI:
- * ```bash
- * npm run review -- --plugin my-plugin fix-issues
- * ```
- *
- * This enables plugins to add functionality like:
- * - Auto-fix suggestions
- * - Generate documentation
- * - Create test cases
  */
 export interface CommandDefinition {
 	/** Command name (e.g., "fix-issues") */
@@ -185,15 +141,6 @@ export interface Logger {
 
 /**
  * Context passed to plugin initialization.
- *
- * ## AI Concept: Plugin Initialization
- *
- * When a plugin is loaded, it receives this context which provides:
- * - Configuration values
- * - Logging utilities
- * - Access to register providers
- *
- * The plugin can use this to set up any resources it needs.
  */
 export interface PluginContext {
 	/** Current configuration */
@@ -212,9 +159,6 @@ export interface PluginContext {
 /**
  * The main plugin interface that all plugins must implement.
  *
- * ## AI Concept: Plugin Contract
- *
- * This interface defines the "contract" between the core and plugins.
  * Plugins must provide at least a name and version. All hooks are optional.
  *
  * ## Creating a Plugin
@@ -238,13 +182,6 @@ export interface PluginContext {
  *
  * export default myPlugin;
  * ```
- *
- * ## Plugin Distribution
- *
- * Plugins can be distributed as:
- * - npm packages: `npm install annoying-reviewer-plugin-security`
- * - Local files: `--plugin ./my-plugin.js`
- * - Git repos: In project's `.annoying-reviewer/plugins/` directory
  */
 export interface Plugin {
 	/**

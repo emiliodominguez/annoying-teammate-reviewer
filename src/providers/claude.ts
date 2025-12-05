@@ -12,7 +12,7 @@
  * - **Safety focus**: Designed to be helpful, harmless, and honest
  * - **Instruction following**: Very good at following specific output formats
  *
- * ## AI Concept: Claude vs Other Providers
+ * ## Claude vs Other Providers
  *
  * | Aspect          | Claude                 | GPT-4              | Gemini           |
  * |-----------------|------------------------|--------------------| -----------------|
@@ -21,7 +21,7 @@
  * | Cost            | $$ (per token)         | $$ (per token)     | $ (cheaper)      |
  * | Code review     | Excellent              | Excellent          | Very good        |
  *
- * ## AI Concept: System Prompts in Claude
+ * ## AI Concept: System Prompts
  *
  * Unlike Ollama (where everything goes in one prompt), Claude has a
  * dedicated `system` parameter for instructions. This creates stronger
@@ -38,7 +38,7 @@
  *
  * This separation helps Claude understand what are instructions vs content.
  *
- * ## AI Concept: Server-Sent Events (SSE)
+ * ## Server-Sent Events (SSE)
  *
  * Claude uses SSE for streaming (not NDJSON like Ollama).
  * SSE is a standard web protocol for server-to-client streaming:
@@ -59,8 +59,6 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
 
 /**
  * Default model for Claude.
- *
- * ## AI Concept: Claude Model Selection (2025)
  *
  * Claude 4.x family (current):
  * - **claude-opus-4-5**: Most capable, industry leader for coding & agents (Nov 2025)
@@ -111,8 +109,6 @@ interface AnthropicClient {
 
 /**
  * Claude LLM provider using Anthropic's API.
- *
- * ## AI Concept: Lazy SDK Loading
  *
  * The Anthropic SDK is only loaded when actually needed:
  * 1. Provider is registered at startup (no import yet)
@@ -168,11 +164,9 @@ export class ClaudeProvider implements LLMProvider {
 	/**
 	 * Checks if Claude is available (API key is set and valid).
 	 *
-	 * ## AI Concept: API Key Validation
-	 *
 	 * For cloud providers, "health" means:
 	 * 1. API key is configured
-	 * 2. API key is valid (optional - could make a test call)
+	 * 2. API key is valid (optional: could make a test call)
 	 *
 	 * We only check if key exists here. Invalid keys will fail
 	 * at generation time with a clear error message.
@@ -190,8 +184,6 @@ export class ClaudeProvider implements LLMProvider {
 
 	/**
 	 * Gets available Claude models.
-	 *
-	 * ## AI Concept: Model Enumeration (2025)
 	 *
 	 * Unlike Ollama (where you download specific models), Claude
 	 * models are cloud-hosted. You have access to all models your
@@ -226,8 +218,6 @@ export class ClaudeProvider implements LLMProvider {
 	/**
 	 * Streams a response from Claude.
 	 *
-	 * ## AI Concept: Claude Streaming with SSE
-	 *
 	 * Claude's streaming uses Server-Sent Events with typed events:
 	 * - `message_start`: Initial message metadata
 	 * - `content_block_start`: Start of a content block
@@ -237,18 +227,6 @@ export class ClaudeProvider implements LLMProvider {
 	 *
 	 * The Anthropic SDK wraps this in an async iterator, making
 	 * consumption simple.
-	 *
-	 * ## AI Concept: System Prompt Separation
-	 *
-	 * Claude separates system instructions from user content:
-	 * ```
-	 * system: "You are Emi, a code reviewer..."
-	 * user: "Review this diff: ..."
-	 * ```
-	 *
-	 * This helps Claude understand the difference between:
-	 * - Instructions (how to behave)
-	 * - Content (what to process)
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
 		const client = await this.getClient();
@@ -285,13 +263,11 @@ export class ClaudeProvider implements LLMProvider {
 	/**
 	 * Lazily loads the Anthropic SDK.
 	 *
-	 * ## AI Concept: Dynamic Imports
-	 *
 	 * Using dynamic import() instead of static import:
 	 * - Static: `import Anthropic from '@anthropic-ai/sdk'` - loads at startup
 	 * - Dynamic: `await import('@anthropic-ai/sdk')` - loads on demand
 	 *
-	 * This is crucial for optional dependencies - users who don't want
+	 * This is crucial for optional dependencies: users who don't want
 	 * Claude don't need to install the SDK.
 	 */
 	private async getClient(): Promise<AnthropicClient> {

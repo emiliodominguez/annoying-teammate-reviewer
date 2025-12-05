@@ -2,41 +2,7 @@
  * @fileoverview Plugin discovery and loading for the code reviewer.
  *
  * This module handles finding, loading, and initializing plugins.
- *
- * ## AI Concept: Plugin Discovery
- *
- * Plugins can be discovered from multiple sources:
- *
- * 1. **CLI flag**: `--plugin ./my-plugin.js`
- *    - Explicit path to a plugin file
- *    - Good for development and one-off plugins
- *
- * 2. **Local directory**: `.annoying-reviewer/plugins/`
- *    - Project-specific plugins
- *    - Checked into version control
- *
- * 3. **npm packages**: `annoying-reviewer-plugin-*`
- *    - Distributed via npm
- *    - Installed as dependencies
- *
- * ## AI Concept: Plugin Loading Order
- *
- * Loading order matters because plugins can depend on each other:
- * 1. Built-in plugins (if any)
- * 2. npm package plugins (alphabetical)
- * 3. Local directory plugins (alphabetical)
- * 4. CLI-specified plugins (in order specified)
- *
- * ## AI Concept: Plugin Isolation
- *
- * Each plugin runs in the same Node.js process (no sandboxing).
- * This means plugins can:
- * - Access the filesystem
- * - Make network requests
- * - Modify global state (bad practice!)
- *
- * For security, only use trusted plugins. Future versions might
- * add sandboxing for untrusted plugins.
+ * Plugins can be loaded from CLI flags, local directories, or npm packages.
  */
 
 import { existsSync, readFileSync, readdirSync } from "fs";
@@ -59,13 +25,6 @@ export interface LoadedPlugin {
 
 /**
  * Loads a plugin from a file path.
- *
- * ## AI Concept: Dynamic ESM Import
- *
- * We use dynamic import() for plugin loading:
- * - Works with both ES modules and CommonJS
- * - Allows plugins to be loaded at runtime
- * - Supports TypeScript plugins (if ts-node is present)
  *
  * @param pluginPath - Path to the plugin file
  * @returns The loaded plugin
@@ -95,13 +54,6 @@ async function loadPluginFromPath(pluginPath: string): Promise<Plugin> {
 /**
  * Loads a plugin from an npm package.
  *
- * ## AI Concept: npm Package Discovery
- *
- * npm packages are loaded using the standard import mechanism.
- * The package must:
- * - Be installed in node_modules
- * - Export a default plugin or a plugin named export
- *
  * @param packageName - npm package name
  * @returns The loaded plugin
  */
@@ -124,12 +76,6 @@ async function loadPluginFromPackage(packageName: string): Promise<Plugin> {
 
 /**
  * Validates that an object is a valid plugin.
- *
- * ## AI Concept: Runtime Type Checking
- *
- * Since plugins are loaded dynamically, we can't rely on TypeScript
- * for type checking. We validate at runtime that the plugin has
- * the required properties.
  *
  * @param plugin - Object to validate
  * @param source - Source for error messages
@@ -179,12 +125,6 @@ function discoverLocalPlugins(): string[] {
 /**
  * Discovers plugins from npm packages.
  *
- * ## AI Concept: Package.json Scanning
- *
- * We look for installed packages that start with:
- * - `annoying-reviewer-plugin-`
- * - `@* /annoying-reviewer-plugin-` (scoped packages)
- *
  * @returns Array of package names
  */
 function discoverNpmPlugins(): string[] {
@@ -213,13 +153,6 @@ function discoverNpmPlugins(): string[] {
 
 /**
  * Loads all discovered plugins.
- *
- * ## AI Concept: Plugin Loading Pipeline
- *
- * 1. Discover plugins from all sources
- * 2. Load each plugin (dynamic import)
- * 3. Validate plugin structure
- * 4. Return loaded plugins with metadata
  *
  * @param cliPlugins - Plugin paths specified via CLI
  * @returns Array of loaded plugins
@@ -308,14 +241,6 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 
 /**
  * Initializes all loaded plugins.
- *
- * ## AI Concept: Plugin Lifecycle
- *
- * Plugins go through a lifecycle:
- * 1. **Load**: Import the plugin module
- * 2. **Validate**: Check it has required properties
- * 3. **Initialize**: Call init() with context
- * 4. **Use**: Call hooks during review
  *
  * @param plugins - Loaded plugins to initialize
  * @param context - Plugin context

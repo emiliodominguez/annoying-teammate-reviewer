@@ -13,7 +13,7 @@
  * - **Speed**: No network latency for each token
  * - **Offline**: Works without internet after model is downloaded
  *
- * ## AI Concept: Local vs Cloud LLMs
+ * ## Local vs Cloud LLMs
  *
  * | Aspect          | Local (Ollama)         | Cloud (OpenAI, Claude) |
  * |-----------------|------------------------|------------------------|
@@ -26,7 +26,7 @@
  * For code review, local models are a good tradeoff - privacy matters,
  * and review quality is "good enough" with modern 7B-13B models.
  *
- * ## AI Concept: Model Selection (2025)
+ * ## Model Selection (2025)
  *
  * Different models have different characteristics:
  * - **deepseek-r1** - Open reasoning model, approaches O3/Gemini 2.5 Pro performance
@@ -51,8 +51,6 @@ const DEFAULT_BASE_URL = "http://localhost:11434";
 
 /**
  * Default model for Ollama.
- *
- * ## AI Concept: Model Selection for Tasks (2025)
  *
  * The "best" model depends on your task and hardware:
  * - **1-3B models** (phi-3, tinyllama): Fast, ~4-8GB RAM, simple tasks
@@ -91,8 +89,6 @@ interface OllamaTagsResponse {
 /**
  * Response shape from Ollama's streaming `/api/generate` endpoint.
  *
- * ## AI Concept: NDJSON Streaming Protocol
- *
  * Ollama uses Newline-Delimited JSON (NDJSON) for streaming:
  * ```
  * {"response":"Hello","done":false}
@@ -116,7 +112,7 @@ interface OllamaGenerateResponse {
 /**
  * Ollama LLM provider for local inference.
  *
- * ## AI Concept: Streaming vs Batch Generation
+ * ## AI Concept: Streaming
  *
  * LLMs generate text token-by-token (not all at once). Two approaches:
  *
@@ -176,8 +172,6 @@ export class OllamaProvider implements LLMProvider {
 	/**
 	 * Checks if Ollama is running and accessible.
 	 *
-	 * ## AI Concept: Health Checks for Local Services
-	 *
 	 * Unlike cloud APIs that are (usually) always available, Ollama
 	 * must be running locally. Common issues:
 	 * - Ollama not installed
@@ -198,8 +192,6 @@ export class OllamaProvider implements LLMProvider {
 
 	/**
 	 * Gets all locally available models.
-	 *
-	 * ## AI Concept: Model Management in Ollama
 	 *
 	 * Ollama models must be downloaded before use:
 	 * ```bash
@@ -237,8 +229,6 @@ export class OllamaProvider implements LLMProvider {
 	/**
 	 * Streams a response from Ollama.
 	 *
-	 * ## AI Concept: NDJSON Streaming
-	 *
 	 * Ollama sends responses as Newline-Delimited JSON:
 	 * 1. Each line is a complete JSON object
 	 * 2. Each object has `response` (text) and `done` (boolean)
@@ -252,12 +242,6 @@ export class OllamaProvider implements LLMProvider {
 	 *
 	 * We handle this by splitting on newlines and catching JSON parse errors
 	 * (partial JSON from packet boundaries is skipped, then completed in next packet).
-	 *
-	 * ## AI Concept: Time to First Token (TTFT)
-	 *
-	 * The time between sending a prompt and receiving the first token
-	 * is a key UX metric. Streaming lets users see progress immediately,
-	 * even if total generation time is the same.
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
 		const model = options?.model ?? this.defaultModel;

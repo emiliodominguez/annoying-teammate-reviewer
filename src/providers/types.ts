@@ -4,8 +4,6 @@
  * This module defines the interface that all LLM providers must implement,
  * enabling the reviewer to work with any LLM backend.
  *
- * ## AI Concept: Provider Abstraction Pattern
- *
  * Different LLM providers have different APIs, but they all do the same thing:
  * take text in, produce text out. By defining a common interface, we can:
  *
@@ -13,7 +11,7 @@
  * 2. **Test with mocks**: Create a `MockProvider` for testing without real API calls
  * 3. **Add new providers**: Implement the interface, register it, done
  *
- * ## AI Concept: Why Each Method Exists
+ * ## Provider Methods
  *
  * ```
  * checkHealth()      → "Is the provider available?" (Ollama running? API key valid?)
@@ -23,7 +21,7 @@
  * getDefaultModel()  → "What model if none specified?" (provider's recommendation)
  * ```
  *
- * ## AI Concept: Provider Differences
+ * ## Provider Differences
  *
  * | Provider | Auth          | Streaming    | System Prompt | Context  |
  * |----------|---------------|--------------|---------------|----------|
@@ -37,8 +35,6 @@
 
 /**
  * Options for text generation across all providers.
- *
- * ## AI Concept: Universal Parameters
  *
  * Despite different APIs, all LLMs share these core parameters:
  * - **model**: Which model to use
@@ -98,8 +94,6 @@ export interface GenerateOptions {
 /**
  * Configuration for initializing a provider.
  *
- * ## AI Concept: Provider Configuration
- *
  * Each provider needs different setup:
  * - **Ollama**: Just baseUrl (defaults to localhost:11434)
  * - **Cloud providers**: API key required, baseUrl optional for proxies
@@ -108,8 +102,6 @@ export interface GenerateOptions {
 export interface ProviderConfig {
 	/**
 	 * API key for authentication (cloud providers).
-	 *
-	 * ## AI Concept: API Key Security
 	 *
 	 * NEVER hardcode API keys. Use environment variables:
 	 * - ANTHROPIC_API_KEY for Claude
@@ -139,8 +131,6 @@ export interface ProviderConfig {
 /**
  * The core interface that all LLM providers must implement.
  *
- * ## AI Concept: Interface Design for LLMs
- *
  * This interface captures the essential operations for any LLM:
  *
  * 1. **Health/Availability** - Can we use this provider right now?
@@ -150,7 +140,7 @@ export interface ProviderConfig {
  * By coding against this interface (not concrete providers), the CLI
  * doesn't care whether it's talking to a local Ollama or cloud Claude.
  *
- * ## AI Concept: Streaming as Default
+ * ## AI Concept: Streaming
  *
  * Notice we only have `streamResponse`, not `generateComplete`.
  * Streaming is the preferred method because:
@@ -184,8 +174,6 @@ export interface LLMProvider {
 	/**
 	 * Checks if the provider is available and properly configured.
 	 *
-	 * ## AI Concept: Health Checks
-	 *
 	 * Before using a provider, we should verify:
 	 * - Local (Ollama): Is the server running?
 	 * - Cloud: Is the API key valid? Is the service up?
@@ -199,8 +187,6 @@ export interface LLMProvider {
 	/**
 	 * Gets the list of models available through this provider.
 	 *
-	 * ## AI Concept: Model Discovery
-	 *
 	 * Available models vary by provider:
 	 * - Ollama: Only locally downloaded models
 	 * - Claude: All models your API key has access to
@@ -212,8 +198,6 @@ export interface LLMProvider {
 
 	/**
 	 * Checks if a specific model is available.
-	 *
-	 * ## AI Concept: Model Validation
 	 *
 	 * Before starting a review, verify the requested model exists.
 	 * Supports partial matching (e.g., "llama3.2" matches "llama3.2:latest").
@@ -275,15 +259,13 @@ export interface LLMProvider {
 /**
  * Constructor signature for provider classes.
  *
- * ## AI Concept: Provider Factory Pattern
- *
  * Providers are created with optional configuration:
  * ```typescript
  * const ollama = new OllamaProvider(); // Uses defaults
  * const claude = new ClaudeProvider({ apiKey: process.env.ANTHROPIC_API_KEY });
  * ```
  *
- * This allows lazy initialization - we only create the provider
+ * This allows lazy initialization: we only create the provider
  * when the user actually selects it.
  */
 export type LLMProviderConstructor = new (config?: ProviderConfig) => LLMProvider;
