@@ -184,6 +184,8 @@ CRITICAL RULES - FOLLOW EXACTLY:
 3. NEVER mention functions, variables, or files unless you can quote them from the diff
 4. If the code looks fine, say "None - looks good!" - don't force issues
 5. STOP after the Summary section
+6. For README/documentation files: Only flag actual errors (broken links, incorrect info). Do NOT flag notes, disclaimers, or badges as "issues"
+7. "This is not an issue but..." means it's NOT an issue - don't list it
 
 BEFORE WRITING ANY ISSUE, ASK YOURSELF:
 - Can I copy-paste the exact code I'm criticizing from the diff above?
@@ -195,6 +197,8 @@ COMMON MISTAKES TO AVOID:
 - Suggesting "extract to utility" for code you can't see
 - Generic advice about "repeated logic" without quoting the actual repeated code
 - Inventing variables like "expectedDiff" that don't exist in the diff
+- Listing documentation text (notes, disclaimers, badges) as code issues
+- Writing "This is not an issue but..." - if it's not an issue, don't list it at all
 
 RESPONSE FORMAT (use exactly this structure, then STOP):
 
