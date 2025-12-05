@@ -36,9 +36,9 @@
  * ## AI Concept: Named Personas
  *
  * Giving the AI a name helps with:
- * - **User experience**: "Emi is reviewing..." feels more personal
+ * - **User experience**: "<REVIEWER_NAME> is reviewing..." feels more personal
  * - **Consistency**: The name can reinforce the persona in prompts
- * - **Memorability**: Users remember "that annoying Emi" better than "the tool"
+ * - **Memorability**: Users remember "that annoying <REVIEWER_NAME>" better than "the tool"
  *
  * The name appears in:
  * - Spinner text during review
@@ -134,7 +134,7 @@ export type BuiltInProvider = (typeof BUILT_IN_PROVIDERS)[number];
  * embody this persona when generating responses. Key elements:
  *
  * ### 1. Role Definition
- * "You are Emi, a senior developer..." establishes identity and expertise level.
+ * "You are <REVIEWER_NAME>, a senior developer..." establishes identity and expertise level.
  *
  * ### 2. Communication Style
  * "Direct and concise" / "dry humor" / "focuses on bugs over nitpicks"
