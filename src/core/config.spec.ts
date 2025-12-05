@@ -1,4 +1,11 @@
-import { REVIEWER_NAME, REVIEWER_PERSONALITY_CUSTOMIZATION, TOOL_DESCRIPTION, TOOL_SHORT_NAME } from "./config";
+import {
+	REVIEWER_NAME,
+	REVIEWER_PERSONALITY_CUSTOMIZATION,
+	REVIEW_STRICTNESS_LEVEL,
+	STRICTNESS_DESCRIPTIONS,
+	TOOL_DESCRIPTION,
+	TOOL_SHORT_NAME,
+} from "./config";
 
 describe("Config module", () => {
 	describe("REVIEWER_NAME", () => {
@@ -76,6 +83,57 @@ describe("Config module", () => {
 			if (REVIEWER_PERSONALITY_CUSTOMIZATION.length > 0) {
 				expect(REVIEWER_PERSONALITY_CUSTOMIZATION.toLowerCase()).toMatch(/style|review|direct|concise|thorough/);
 			}
+		});
+	});
+
+	describe("REVIEW_STRICTNESS_LEVEL", () => {
+		test("should be a valid strictness level", () => {
+			// Given
+			// When
+			// Then
+			expect(["lenient", "balanced", "strict"]).toContain(REVIEW_STRICTNESS_LEVEL);
+		});
+
+		test("should default to balanced when env var is not set", () => {
+			// Given - default environment (no REVIEW_STRICTNESS set or invalid value)
+			// When - module is loaded
+			// Then - should use balanced as default
+			// Note: This test verifies the default; env var override is tested via integration
+			expect(REVIEW_STRICTNESS_LEVEL).toBe("balanced");
+		});
+	});
+
+	describe("STRICTNESS_DESCRIPTIONS", () => {
+		test("should have descriptions for all strictness levels", () => {
+			// Given
+			// When
+			// Then
+			expect(STRICTNESS_DESCRIPTIONS).toHaveProperty("lenient");
+			expect(STRICTNESS_DESCRIPTIONS).toHaveProperty("balanced");
+			expect(STRICTNESS_DESCRIPTIONS).toHaveProperty("strict");
+		});
+
+		test("should have non-empty descriptions", () => {
+			// Given
+			// When
+			// Then
+			expect(STRICTNESS_DESCRIPTIONS.lenient.length).toBeGreaterThan(0);
+			expect(STRICTNESS_DESCRIPTIONS.balanced.length).toBeGreaterThan(0);
+			expect(STRICTNESS_DESCRIPTIONS.strict.length).toBeGreaterThan(0);
+		});
+
+		test("lenient description should focus on critical issues", () => {
+			// Given
+			// When
+			// Then
+			expect(STRICTNESS_DESCRIPTIONS.lenient.toLowerCase()).toMatch(/critical|bug|security/);
+		});
+
+		test("strict description should be comprehensive", () => {
+			// Given
+			// When
+			// Then
+			expect(STRICTNESS_DESCRIPTIONS.strict.toLowerCase()).toMatch(/thorough|everything/);
 		});
 	});
 });

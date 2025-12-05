@@ -62,9 +62,10 @@ export type ReviewStrictnessLevel = "lenient" | "balanced" | "strict";
  * Current review strictness level.
  * Can be overridden via environment variable: REVIEW_STRICTNESS=strict
  */
-export const REVIEW_STRICTNESS_LEVEL: ReviewStrictnessLevel = (
-	["lenient", "balanced", "strict"].includes(process.env.REVIEW_STRICTNESS ?? "") ? process.env.REVIEW_STRICTNESS : "balanced"
-) as ReviewStrictnessLevel;
+const strictnessEnv = process.env.REVIEW_STRICTNESS;
+
+export const REVIEW_STRICTNESS_LEVEL: ReviewStrictnessLevel =
+	strictnessEnv === "lenient" || strictnessEnv === "balanced" || strictnessEnv === "strict" ? strictnessEnv : "balanced";
 
 /**
  * Descriptions for each strictness level that get injected into prompts.
