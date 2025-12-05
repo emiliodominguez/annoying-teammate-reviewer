@@ -266,7 +266,7 @@ async function main(): Promise<void> {
 	// - Use the tool without Ollama (copy/paste to web UIs)
 
 	if (options.exportPrompt) {
-		await handleExportPrompt(options);
+		handleExportPrompt(options);
 
 		return;
 	}
@@ -553,7 +553,7 @@ async function main(): Promise<void> {
  *
  * @param options - Export prompt options
  */
-async function handleExportPrompt(options: { staged?: boolean; branch?: string | boolean; untracked?: boolean }): Promise<void> {
+function handleExportPrompt(options: { staged?: boolean; branch?: string | boolean; untracked?: boolean }): void {
 	const reviewOptions = {
 		staged: options.staged,
 		branch: options.branch,
@@ -917,7 +917,7 @@ async function runReview(
 // Execute Main Function
 // ═══════════════════════════════════════════════════════════════════════════════
 
-main().catch((error) => {
+main().catch((error: unknown) => {
 	console.error(chalk.red("Fatal error:"), error);
 	process.exit(1);
 });
