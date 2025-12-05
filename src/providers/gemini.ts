@@ -52,12 +52,11 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
  *
  * ## AI Concept: Choosing Gemini Models
  *
- * Gemini pricing (as of 2024):
- * - **Gemini 1.5 Flash**: ~$0.075/1M input, ~$0.30/1M output (very cheap!)
- * - **Gemini 1.5 Pro**: ~$3.50/1M input, ~$10.50/1M output
+ * Gemini offers competitive pricing (check ai.google.dev for current rates).
+ * Flash models are generally much cheaper than Pro models.
  *
  * Flash is perfect for code review:
- * - 10-20x cheaper than GPT-4
+ * - Significantly cheaper than GPT-4/Claude
  * - Still very capable for structured tasks
  * - Fastest inference of major models
  */
@@ -117,11 +116,19 @@ interface GeminiClient {
  * ```
  */
 export class GeminiProvider implements LLMProvider {
+	/** Provider identifier used for CLI selection. */
 	readonly name = "gemini";
+
+	/** Human-readable provider name for display. */
 	readonly displayName = "Gemini";
 
+	/** Google AI API key for authentication. */
 	private apiKey: string | undefined;
+
+	/** Default model to use when none specified. */
 	private defaultModel: string;
+
+	/** Cached Google Generative AI client instance. */
 	private client: GeminiClient | null = null;
 
 	/**
@@ -135,40 +142,10 @@ export class GeminiProvider implements LLMProvider {
 	}
 
 	/**
-	 * Lazily loads the Google Generative AI SDK.
-	 */
-	private async getClient(): Promise<GeminiClient> {
-		if (this.client) {
-			return this.client;
-		}
-
-		if (!this.apiKey) {
-			throw new Error("GOOGLE_AI_API_KEY environment variable is required for Gemini provider");
-		}
-
-		try {
-			const { GoogleGenerativeAI } = await import("@google/generative-ai");
-
-			this.client = new GoogleGenerativeAI(this.apiKey) as unknown as GeminiClient;
-
-			return this.client;
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
-				throw new Error(
-					"@google/generative-ai is not installed. Run: npm install @google/generative-ai\n" +
-						"Or use a different provider: --provider ollama",
-				);
-			}
-
-			throw error;
-		}
-	}
-
-	/**
 	 * Checks if Gemini is available.
 	 */
-	async checkHealth(): Promise<boolean> {
-		return Boolean(this.apiKey);
+	checkHealth(): Promise<boolean> {
+		return Promise.resolve(Boolean(this.apiKey));
 	}
 
 	/**
@@ -183,8 +160,8 @@ export class GeminiProvider implements LLMProvider {
 	 *
 	 * The "-exp" suffix indicates experimental/preview models.
 	 */
-	async getAvailableModels(): Promise<string[]> {
-		return ["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"];
+	getAvailableModels(): Promise<string[]> {
+		return Promise.resolve(["gemini-2.0-flash", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-flash-8b", "gemini-1.5-pro"]);
 	}
 
 	/**
@@ -193,7 +170,7 @@ export class GeminiProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
+		return models.some((model) => model.includes(modelName) || modelName.includes(model));
 	}
 
 	/**
@@ -243,5 +220,35 @@ export class GeminiProvider implements LLMProvider {
 	 */
 	getDefaultModel(): string {
 		return this.defaultModel;
+	}
+
+	/**
+	 * Lazily loads the Google Generative AI SDK.
+	 */
+	private async getClient(): Promise<GeminiClient> {
+		if (this.client) {
+			return this.client;
+		}
+
+		if (!this.apiKey) {
+			throw new Error("GOOGLE_AI_API_KEY environment variable is required for Gemini provider");
+		}
+
+		try {
+			const { GoogleGenerativeAI } = await import("@google/generative-ai");
+
+			this.client = new GoogleGenerativeAI(this.apiKey) as unknown as GeminiClient;
+
+			return this.client;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
+				throw new Error(
+					"@google/generative-ai is not installed. Run: npm install @google/generative-ai\n" +
+						"Or use a different provider: --provider ollama",
+				);
+			}
+
+			throw error;
+		}
 	}
 }

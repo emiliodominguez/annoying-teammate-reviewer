@@ -57,10 +57,8 @@ import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
  *
  * ## AI Concept: Model Selection for Cost/Quality
  *
- * OpenAI pricing is per-token:
- * - **GPT-4 Turbo**: ~$10/1M input, ~$30/1M output
- * - **GPT-4o**: ~$5/1M input, ~$15/1M output
- * - **GPT-4o-mini**: ~$0.15/1M input, ~$0.6/1M output
+ * OpenAI pricing varies by model (check platform.openai.com for current rates).
+ * Generally: GPT-4 Turbo > GPT-4o > GPT-4o-mini in both cost and capability.
  *
  * For code review, GPT-4o offers the best value:
  * - Good reasoning for code analysis
@@ -129,12 +127,22 @@ interface OpenAIClient {
  * ```
  */
 export class OpenAIProvider implements LLMProvider {
+	/** Provider identifier used for CLI selection. */
 	readonly name = "openai";
+
+	/** Human-readable provider name for display. */
 	readonly displayName = "OpenAI";
 
+	/** OpenAI API key for authentication. */
 	private apiKey: string | undefined;
+
+	/** Optional custom base URL for API-compatible services. */
 	private baseUrl: string | undefined;
+
+	/** Default model to use when none specified. */
 	private defaultModel: string;
+
+	/** Cached OpenAI client instance. */
 	private client: OpenAIClient | null = null;
 
 	/**
@@ -149,45 +157,10 @@ export class OpenAIProvider implements LLMProvider {
 	}
 
 	/**
-	 * Lazily loads the OpenAI SDK.
-	 *
-	 * ## AI Concept: SDK Lazy Loading
-	 *
-	 * Same pattern as Claude - only load the SDK when needed.
-	 * This keeps the tool lightweight for users who don't use OpenAI.
-	 */
-	private async getClient(): Promise<OpenAIClient> {
-		if (this.client) {
-			return this.client;
-		}
-
-		if (!this.apiKey) {
-			throw new Error("OPENAI_API_KEY environment variable is required for OpenAI provider");
-		}
-
-		try {
-			const { default: OpenAI } = await import("openai");
-
-			this.client = new OpenAI({
-				apiKey: this.apiKey,
-				baseURL: this.baseUrl,
-			}) as unknown as OpenAIClient;
-
-			return this.client;
-		} catch (error) {
-			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
-				throw new Error("openai package is not installed. Run: npm install openai\n" + "Or use a different provider: --provider ollama");
-			}
-
-			throw error;
-		}
-	}
-
-	/**
 	 * Checks if OpenAI is available.
 	 */
-	async checkHealth(): Promise<boolean> {
-		return Boolean(this.apiKey);
+	checkHealth(): Promise<boolean> {
+		return Promise.resolve(Boolean(this.apiKey));
 	}
 
 	/**
@@ -202,8 +175,8 @@ export class OpenAIProvider implements LLMProvider {
 	 *
 	 * We return commonly available models.
 	 */
-	async getAvailableModels(): Promise<string[]> {
-		return ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"];
+	getAvailableModels(): Promise<string[]> {
+		return Promise.resolve(["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"]);
 	}
 
 	/**
@@ -212,7 +185,7 @@ export class OpenAIProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
+		return models.some((model) => model.includes(modelName) || modelName.includes(model));
 	}
 
 	/**
@@ -260,5 +233,40 @@ export class OpenAIProvider implements LLMProvider {
 	 */
 	getDefaultModel(): string {
 		return this.defaultModel;
+	}
+
+	/**
+	 * Lazily loads the OpenAI SDK.
+	 *
+	 * ## AI Concept: SDK Lazy Loading
+	 *
+	 * Same pattern as Claude - only load the SDK when needed.
+	 * This keeps the tool lightweight for users who don't use OpenAI.
+	 */
+	private async getClient(): Promise<OpenAIClient> {
+		if (this.client) {
+			return this.client;
+		}
+
+		if (!this.apiKey) {
+			throw new Error("OPENAI_API_KEY environment variable is required for OpenAI provider");
+		}
+
+		try {
+			const { default: OpenAI } = await import("openai");
+
+			this.client = new OpenAI({
+				apiKey: this.apiKey,
+				baseURL: this.baseUrl,
+			}) as unknown as OpenAIClient;
+
+			return this.client;
+		} catch (error) {
+			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
+				throw new Error("openai package is not installed. Run: npm install openai\n" + "Or use a different provider: --provider ollama");
+			}
+
+			throw error;
+		}
 	}
 }
