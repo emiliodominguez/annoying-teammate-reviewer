@@ -221,9 +221,19 @@ export class ProviderRegistry {
 		}
 
 		// Fall back to first registered provider
-		const firstName = this.providers.keys().next().value!;
+		const firstName = this.providers.keys().next().value;
 
-		return this.get(firstName)!;
+		if (!firstName) {
+			throw new Error("No providers registered");
+		}
+
+		const fallbackProvider = this.get(firstName);
+
+		if (!fallbackProvider) {
+			throw new Error(`Provider ${firstName} not found`);
+		}
+
+		return fallbackProvider;
 	}
 
 	/**

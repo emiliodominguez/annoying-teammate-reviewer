@@ -389,6 +389,32 @@ describe("ProviderRegistry", () => {
 			// Then
 			expect(result.name).toEqual("healthy");
 		});
+
+		test("should fall back to first provider even after all health checks fail", async () => {
+			// Given - All providers unhealthy, but still returns first one
+			const allUnhealthy = [
+				createMockProvider({
+					name: "provider-a",
+					checkHealth: async () => {
+						throw new Error("Failed");
+					},
+				}),
+				createMockProvider({
+					name: "provider-b",
+					checkHealth: async () => false,
+				}),
+			];
+
+			for (const p of allUnhealthy) {
+				registry.register(p);
+			}
+
+			// When
+			const result = await registry.getDefault();
+
+			// Then - Falls back to first registered
+			expect(result.name).toEqual("provider-a");
+		});
 	});
 
 	describe("list", () => {
