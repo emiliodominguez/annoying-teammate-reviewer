@@ -238,9 +238,7 @@ You are a code reviewer. Your job is to review the EXACT git diff shown below.
 
 ## Review Strictness: ${REVIEW_STRICTNESS_LEVEL}
 ${STRICTNESS_DESCRIPTIONS[REVIEW_STRICTNESS_LEVEL]}
-
-## Your Personality
-${REVIEWER_PERSONALITY_CUSTOMIZATION}
+${REVIEWER_PERSONALITY_CUSTOMIZATION.trim() ? `\n## Your Personality\n${REVIEWER_PERSONALITY_CUSTOMIZATION}` : ""}
 ${REVIEWER_INSTRUCTIONS}
 `;
 

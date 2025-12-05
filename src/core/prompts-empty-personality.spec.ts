@@ -18,6 +18,12 @@ jest.unstable_mockModule("./config.js", () => ({
 	TOOL_SHORT_NAME: "test-reviewer",
 	TOOL_DESCRIPTION: "Test description",
 	REVIEWER_PERSONALITY_CUSTOMIZATION: "", // Empty string to test the falsy branch
+	REVIEW_STRICTNESS_LEVEL: "balanced",
+	STRICTNESS_DESCRIPTIONS: {
+		lenient: "Focus only on critical bugs, security issues, and broken functionality.",
+		balanced: "Flag bugs, logic errors, and significant maintainability issues.",
+		strict: "Thoroughly examine everything - bugs, potential issues, style problems.",
+	},
 }));
 
 // Dynamic import after mock setup (required for ESM)
@@ -34,7 +40,7 @@ describe("Prompts module with empty personality customization", () => {
 
 			// When - REVIEWER_PERSONALITY is evaluated at import time
 
-			// Then
+			// Then - personality section should be omitted for neutral reviewer
 			expect(REVIEWER_PERSONALITY).not.toContain("## Your Personality");
 		});
 
