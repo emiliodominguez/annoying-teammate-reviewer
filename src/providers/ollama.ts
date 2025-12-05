@@ -26,18 +26,20 @@
  * For code review, local models are a good tradeoff - privacy matters,
  * and review quality is "good enough" with modern 7B-13B models.
  *
- * ## AI Concept: Model Selection
+ * ## AI Concept: Model Selection (2025)
  *
  * Different models have different characteristics:
- * - **llama3.2** - Meta's latest, good balance of speed/quality
- * - **codellama** - Fine-tuned on code, better for programming tasks
- * - **mistral** - Fast and efficient, good for simpler tasks
- * - **qwen2.5-coder** - Alibaba's code model, very capable
+ * - **deepseek-r1** - Open reasoning model, approaches O3/Gemini 2.5 Pro performance
+ * - **qwen3** - Latest Qwen, dense and MoE models available
+ * - **deepcoder** - 14B coder at O3-mini level, fully open-source
+ * - **codellama** - 87 languages, trained on 2T tokens
+ * - **llama3.3** - Meta's latest, 70B for complex analysis
+ * - **phi-3** - Microsoft's 3.8B, matches bigger models on benchmarks
  *
  * Larger models (13B, 70B) are smarter but slower and need more RAM.
- * For code review, 7B-13B models are usually sufficient.
+ * For code review, 7B-14B models are usually sufficient.
  *
- * @see https://github.com/ollama/ollama/blob/main/docs/api.md
+ * @see https://ollama.com/library
  */
 
 import type { GenerateOptions, LLMProvider, ProviderConfig } from "./types";
@@ -50,19 +52,22 @@ const DEFAULT_BASE_URL = "http://localhost:11434";
 /**
  * Default model for Ollama.
  *
- * ## AI Concept: Model Selection for Tasks
+ * ## AI Concept: Model Selection for Tasks (2025)
  *
  * The "best" model depends on your task and hardware:
- * - **7B models** (llama3.2, mistral): Fast, ~8GB RAM, good for simple tasks
- * - **13B models**: Better reasoning, ~16GB RAM, good balance
- * - **70B models**: Near cloud quality, ~64GB RAM, slow on CPU
+ * - **1-3B models** (phi-3, tinyllama): Fast, ~4-8GB RAM, simple tasks
+ * - **7B models** (mistral, qwen3:7b): Good balance, ~8GB RAM
+ * - **13-14B models** (deepcoder, qwen3:14b): Better reasoning, ~16GB RAM
+ * - **70B models** (llama3.3): Near cloud quality, ~64GB RAM
  *
- * For code review, 7B-13B is usually sufficient because:
- * - Reviews are focused tasks with clear output format
- * - We provide extensive context (standards, diff)
- * - Hallucination prevention is more about prompts than model size
+ * Recommended for code review:
+ * - **deepcoder**: O3-mini level coding, 14B parameters
+ * - **qwen3**: Latest generation, excellent reasoning
+ * - **codellama**: Battle-tested, 87 language support
+ *
+ * @see https://ollama.com/library
  */
-const DEFAULT_MODEL = "codellama";
+const DEFAULT_MODEL = "deepcoder";
 
 /**
  * Represents a model available in Ollama.
