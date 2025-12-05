@@ -31,9 +31,9 @@ AI-powered code reviewer that mimics your annoying teammate's review style. Supp
 | Provider | Description                             | Requires         |
 | -------- | --------------------------------------- | ---------------- |
 | Ollama   | Local LLM - no data leaves your machine | Ollama installed |
-| Claude   | Anthropic's Claude models               | API key          |
-| OpenAI   | GPT-4o and other OpenAI models          | API key          |
-| Gemini   | Google's Gemini models                  | API key          |
+| Claude   | Anthropic's Claude 4.x models           | API key          |
+| OpenAI   | GPT-4.1/5.x and other OpenAI models     | API key          |
+| Gemini   | Google's Gemini 2.x models              | API key          |
 
 ## Prerequisites
 
@@ -54,12 +54,14 @@ AI-powered code reviewer that mimics your annoying teammate's review style. Supp
 3. **Pull a model**
 
     ```bash
-    ollama pull codellama     # Default - code-focused model
+    ollama pull deepcoder     # Default - O3-mini level coding (14B)
     ```
 
-    > **Tip:** If you experience hallucination issues (model inventing files or
-    > generic advice), try `llama3.2` which follows formatting instructions more
-    > reliably: `ollama pull llama3.2`
+    > **Tip:** Other recommended models for code review:
+    >
+    > - `qwen3` - Latest generation, excellent reasoning
+    > - `codellama` - Battle-tested, 87 language support
+    > - `deepseek-r1` - Open reasoning model, approaches frontier performance
 
 ### Option 2: Claude (Anthropic)
 
@@ -130,9 +132,9 @@ npm run review -- --provider gemini
 ### Use a different model
 
 ```bash
-npx tsx src/index.ts --model llama3.2
-npx tsx src/index.ts --provider claude --model claude-3-opus-20240229
-npx tsx src/index.ts --provider openai --model gpt-4-turbo
+npx tsx src/index.ts --model qwen3
+npx tsx src/index.ts --provider claude --model claude-opus-4-5-20251124
+npx tsx src/index.ts --provider openai --model gpt-4.1-mini
 ```
 
 ### List available providers
@@ -360,22 +362,22 @@ Edit `src/prompts.ts` to adjust:
 | Variable               | Description    | Default                  |
 | ---------------------- | -------------- | ------------------------ |
 | `OLLAMA_BASE_URL`      | Ollama API URL | `http://localhost:11434` |
-| `OLLAMA_DEFAULT_MODEL` | Default model  | `codellama`              |
+| `OLLAMA_DEFAULT_MODEL` | Default model  | `deepcoder`              |
 
 #### Claude (Anthropic)
 
-| Variable               | Description       | Default                    |
-| ---------------------- | ----------------- | -------------------------- |
-| `ANTHROPIC_API_KEY`    | Anthropic API key | Required                   |
-| `CLAUDE_DEFAULT_MODEL` | Default model     | `claude-sonnet-4-20250514` |
+| Variable               | Description       | Default                      |
+| ---------------------- | ----------------- | ---------------------------- |
+| `ANTHROPIC_API_KEY`    | Anthropic API key | Required                     |
+| `CLAUDE_DEFAULT_MODEL` | Default model     | `claude-sonnet-4-5-20250929` |
 
 #### OpenAI
 
-| Variable               | Description    | Default  |
-| ---------------------- | -------------- | -------- |
-| `OPENAI_API_KEY`       | OpenAI API key | Required |
-| `OPENAI_BASE_URL`      | OpenAI API URL | Default  |
-| `OPENAI_DEFAULT_MODEL` | Default model  | `gpt-4o` |
+| Variable               | Description    | Default   |
+| ---------------------- | -------------- | --------- |
+| `OPENAI_API_KEY`       | OpenAI API key | Required  |
+| `OPENAI_BASE_URL`      | OpenAI API URL | Default   |
+| `OPENAI_DEFAULT_MODEL` | Default model  | `gpt-4.1` |
 
 #### Gemini (Google)
 
@@ -383,7 +385,7 @@ Edit `src/prompts.ts` to adjust:
 | ---------------------- | ----------------- | ------------------ |
 | `GOOGLE_AI_API_KEY`    | Google AI API key | Required           |
 | `GEMINI_API_KEY`       | Alias for above   | -                  |
-| `GEMINI_DEFAULT_MODEL` | Default model     | `gemini-2.0-flash` |
+| `GEMINI_DEFAULT_MODEL` | Default model     | `gemini-2.5-flash` |
 
 Example usage:
 
@@ -392,13 +394,13 @@ Example usage:
 OLLAMA_BASE_URL=http://192.168.1.100:11434 npm run review
 
 # Change default model without CLI flag
-OLLAMA_DEFAULT_MODEL=llama3.2 npm run review
+OLLAMA_DEFAULT_MODEL=qwen3 npm run review
 
 # Use Claude by default
 LLM_PROVIDER=claude npm run review
 
 # Use OpenAI with a specific model
-OPENAI_DEFAULT_MODEL=gpt-4-turbo npm run review -- --provider openai
+OPENAI_DEFAULT_MODEL=gpt-4.1-mini npm run review -- --provider openai
 ```
 
 ## Example Output
@@ -452,12 +454,12 @@ ollama serve
 Pull the model first:
 
 ```bash
-ollama pull llama3.2
+ollama pull deepcoder
 ```
 
 ### Slow responses
 
-- Smaller models are faster: try `llama3.2` instead of larger variants
+- Smaller models are faster: try `qwen3:7b` instead of larger variants
 - First run downloads the model (can take a while)
 - Review fewer files at once for faster feedback
 
@@ -465,7 +467,7 @@ ollama pull llama3.2
 
 Some models hallucinate generic advice instead of reviewing the actual diff. Solutions:
 
-1. **Try llama3.2** - it follows formatting instructions more reliably: `--model llama3.2`
+1. **Try qwen3** - it follows formatting instructions more reliably: `--model qwen3`
 2. **Make sure there's actually a diff** - run `git diff HEAD` to verify
 3. **Review smaller changes** - large diffs can confuse the model
 
