@@ -70,7 +70,7 @@ const DEFAULT_MODEL = "gemini-2.0-flash";
  */
 interface GeminiContent {
 	role: "user" | "model";
-	parts: Array<{ text: string }>;
+	parts: { text: string }[];
 }
 
 interface GeminiStreamChunk {
@@ -130,8 +130,8 @@ export class GeminiProvider implements LLMProvider {
 	 * @param config - Provider configuration
 	 */
 	constructor(config?: ProviderConfig) {
-		this.apiKey = config?.apiKey || process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY;
-		this.defaultModel = config?.defaultModel || process.env.GEMINI_DEFAULT_MODEL || DEFAULT_MODEL;
+		this.apiKey = config?.apiKey ?? process.env.GOOGLE_AI_API_KEY ?? process.env.GEMINI_API_KEY;
+		this.defaultModel = config?.defaultModel ?? process.env.GEMINI_DEFAULT_MODEL ?? DEFAULT_MODEL;
 	}
 
 	/**
@@ -156,7 +156,7 @@ export class GeminiProvider implements LLMProvider {
 			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
 				throw new Error(
 					"@google/generative-ai is not installed. Run: npm install @google/generative-ai\n" +
-						"Or use a different provider: --provider ollama"
+						"Or use a different provider: --provider ollama",
 				);
 			}
 
@@ -193,7 +193,7 @@ export class GeminiProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) || modelName.includes(model));
+		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
 	}
 
 	/**
@@ -217,7 +217,7 @@ export class GeminiProvider implements LLMProvider {
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
 		const client = await this.getClient();
-		const model = options?.model || this.defaultModel;
+		const model = options?.model ?? this.defaultModel;
 
 		const generativeModel = client.getGenerativeModel({ model });
 		const chat = generativeModel.startChat();

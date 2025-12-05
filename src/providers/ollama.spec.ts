@@ -34,7 +34,7 @@ describe("OllamaProvider", () => {
 			// Given
 			const configuredProvider = new OllamaProvider({
 				baseUrl: "http://custom:8080",
-				defaultModel: "llama3.2"
+				defaultModel: "llama3.2",
 			});
 
 			// When / Then
@@ -48,7 +48,7 @@ describe("OllamaProvider", () => {
 			process.env = {
 				...originalEnv,
 				OLLAMA_BASE_URL: "http://env-host:1234",
-				OLLAMA_DEFAULT_MODEL: "env-model"
+				OLLAMA_DEFAULT_MODEL: "env-model",
 			};
 
 			// When
@@ -67,7 +67,7 @@ describe("OllamaProvider", () => {
 
 			process.env = {
 				...originalEnv,
-				OLLAMA_DEFAULT_MODEL: "env-model"
+				OLLAMA_DEFAULT_MODEL: "env-model",
 			};
 
 			// When
@@ -153,9 +153,9 @@ describe("OllamaProvider", () => {
 					models: [
 						{ name: "llama3.2:latest", modified_at: "2024-01-01", size: 1000 },
 						{ name: "codellama:7b", modified_at: "2024-01-01", size: 2000 },
-						{ name: "mistral:latest", modified_at: "2024-01-01", size: 3000 }
-					]
-				})
+						{ name: "mistral:latest", modified_at: "2024-01-01", size: 3000 },
+					],
+				}),
 			} as Response);
 
 			// When
@@ -169,7 +169,7 @@ describe("OllamaProvider", () => {
 			// Given
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ models: [] })
+				json: async () => ({ models: [] }),
 			} as Response);
 
 			// When
@@ -205,7 +205,7 @@ describe("OllamaProvider", () => {
 			// Given
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({})
+				json: async () => ({}),
 			} as Response);
 
 			// When
@@ -222,8 +222,8 @@ describe("OllamaProvider", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({
-					models: [{ name: "llama3.2:latest" }, { name: "codellama:7b" }]
-				})
+					models: [{ name: "llama3.2:latest" }, { name: "codellama:7b" }],
+				}),
 			} as Response);
 
 			// When
@@ -238,8 +238,8 @@ describe("OllamaProvider", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({
-					models: [{ name: "llama3.2:latest" }]
-				})
+					models: [{ name: "llama3.2:latest" }],
+				}),
 			} as Response);
 
 			// When
@@ -254,8 +254,8 @@ describe("OllamaProvider", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({
-					models: [{ name: "llama3.2:latest" }]
-				})
+					models: [{ name: "llama3.2:latest" }],
+				}),
 			} as Response);
 
 			// When
@@ -269,7 +269,7 @@ describe("OllamaProvider", () => {
 			// Given
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				json: async () => ({ models: [] })
+				json: async () => ({ models: [] }),
 			} as Response);
 
 			// When
@@ -298,8 +298,8 @@ describe("OllamaProvider", () => {
 						const chunk = chunks[index++];
 
 						return { done: false, value: encoder.encode(chunk) };
-					}
-				})
+					},
+				}),
 			} as unknown as ReadableStream<Uint8Array>;
 		}
 
@@ -310,7 +310,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			const onChunk = jest.fn();
@@ -329,7 +329,7 @@ describe("OllamaProvider", () => {
 			// Given
 			mockFetch.mockResolvedValueOnce({
 				ok: false,
-				text: async () => "Model not found"
+				text: async () => "Model not found",
 			} as Response);
 
 			// When / Then
@@ -340,7 +340,7 @@ describe("OllamaProvider", () => {
 			// Given
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: null
+				body: null,
 			} as Response);
 
 			// When / Then
@@ -354,7 +354,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -373,7 +373,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -392,7 +392,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -411,7 +411,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -430,7 +430,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -450,7 +450,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			const onChunk = jest.fn();
@@ -471,7 +471,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			const onChunk = jest.fn();
@@ -491,7 +491,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			const onChunk = jest.fn();
@@ -510,7 +510,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When
@@ -530,7 +530,7 @@ describe("OllamaProvider", () => {
 
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
-				body: mockStream
+				body: mockStream,
 			} as Response);
 
 			// When

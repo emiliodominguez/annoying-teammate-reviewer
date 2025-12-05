@@ -136,7 +136,7 @@ const EXTENSION_PRIORITIES: Record<string, number> = {
 	".json": 60,
 	".md": 65,
 	".yml": 70,
-	".yaml": 70
+	".yaml": 70,
 };
 
 /**
@@ -169,7 +169,7 @@ function getPriority(filePath: string): number {
  * @returns The file path, or "unknown" if parsing fails
  */
 function extractFilePath(diffHeader: string): string {
-	const match = diffHeader.match(/b\/(.+)$/);
+	const match = /b\/(.+)$/.exec(diffHeader);
 
 	return match ? match[1] : "unknown";
 }
@@ -193,7 +193,7 @@ function parseFileDiffs(diff: string): FileDiff[] {
 			return {
 				path,
 				content,
-				priority: getPriority(path)
+				priority: getPriority(path),
 			};
 		});
 }
@@ -230,7 +230,7 @@ export function smartTruncate(diff: string, maxLength: number): TruncateResult {
 			diff,
 			included: files.map((file) => file.path),
 			skipped: [],
-			wasTruncated: false
+			wasTruncated: false,
 		};
 	}
 
@@ -269,7 +269,7 @@ export function smartTruncate(diff: string, maxLength: number): TruncateResult {
 		diff: truncatedDiff + skippedNote,
 		included: included.map((file) => file.path),
 		skipped,
-		wasTruncated: true
+		wasTruncated: true,
 	};
 }
 
@@ -341,7 +341,7 @@ export function splitIntoBatches(diff: string, maxLength: number): DiffBatch[] {
 					batchNumber: batches.length + 1,
 					totalBatches: 0,
 					diff: currentBatch.map((file) => file.content).join(""),
-					files: currentBatch.map((file) => file.path)
+					files: currentBatch.map((file) => file.path),
 				});
 				currentBatch = [];
 				currentLength = 0;
@@ -351,8 +351,8 @@ export function splitIntoBatches(diff: string, maxLength: number): DiffBatch[] {
 			batches.push({
 				batchNumber: batches.length + 1,
 				totalBatches: 0,
-				diff: fileDiff.content.substring(0, maxLength) + `\n\n[File truncated - ${fileDiff.path} exceeds ${maxLength} chars]`,
-				files: [fileDiff.path]
+				diff: `${fileDiff.content.substring(0, maxLength)}\n\n[File truncated - ${fileDiff.path} exceeds ${maxLength} chars]`,
+				files: [fileDiff.path],
 			});
 
 			continue;
@@ -365,7 +365,7 @@ export function splitIntoBatches(diff: string, maxLength: number): DiffBatch[] {
 				batchNumber: batches.length + 1,
 				totalBatches: 0,
 				diff: currentBatch.map((file) => file.content).join(""),
-				files: currentBatch.map((file) => file.path)
+				files: currentBatch.map((file) => file.path),
 			});
 			currentBatch = [];
 			currentLength = 0;
@@ -382,7 +382,7 @@ export function splitIntoBatches(diff: string, maxLength: number): DiffBatch[] {
 			batchNumber: batches.length + 1,
 			totalBatches: 0,
 			diff: currentBatch.map((file) => file.content).join(""),
-			files: currentBatch.map((file) => file.path)
+			files: currentBatch.map((file) => file.path),
 		});
 	}
 

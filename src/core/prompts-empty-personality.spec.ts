@@ -17,7 +17,7 @@ jest.unstable_mockModule("./config.js", () => ({
 	REVIEWER_NAME: "TestReviewer",
 	TOOL_SHORT_NAME: "test-reviewer",
 	TOOL_DESCRIPTION: "Test description",
-	REVIEWER_PERSONALITY_CUSTOMIZATION: "" // Empty string to test the falsy branch
+	REVIEWER_PERSONALITY_CUSTOMIZATION: "", // Empty string to test the falsy branch
 }));
 
 // Dynamic import after mock setup (required for ESM)

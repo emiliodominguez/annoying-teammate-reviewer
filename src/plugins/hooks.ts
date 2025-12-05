@@ -109,7 +109,7 @@ export class HookManager {
 					},
 					setPrompt: (newPrompt: string) => {
 						currentPrompt = newPrompt;
-					}
+					},
 				};
 
 				await plugin.beforePrompt(context);
@@ -154,7 +154,7 @@ export class HookManager {
 					providerName,
 					setResponse: (newResponse: string) => {
 						currentResponse = newResponse;
-					}
+					},
 				};
 
 				await plugin.afterResponse(context);
@@ -184,7 +184,7 @@ export class HookManager {
 	 */
 	async runBeforeVerdict(
 		response: string,
-		verdict: "approve" | "request-changes" | "block" | "unknown"
+		verdict: "approve" | "request-changes" | "block" | "unknown",
 	): Promise<"approve" | "request-changes" | "block" | "unknown"> {
 		let currentVerdict = verdict;
 
@@ -197,7 +197,7 @@ export class HookManager {
 					verdict: currentVerdict,
 					setVerdict: (newVerdict) => {
 						currentVerdict = newVerdict;
-					}
+					},
 				};
 
 				await plugin.beforeVerdict(context);
@@ -219,8 +219,8 @@ export class HookManager {
 	 *
 	 * @returns Array of command definitions with plugin source
 	 */
-	getAllCommands(): Array<{ plugin: string; command: ReturnType<NonNullable<Plugin["commands"]>>[number] }> {
-		const commands: Array<{ plugin: string; command: ReturnType<NonNullable<Plugin["commands"]>>[number] }> = [];
+	getAllCommands(): { plugin: string; command: ReturnType<NonNullable<Plugin["commands"]>>[number] }[] {
+		const commands: { plugin: string; command: ReturnType<NonNullable<Plugin["commands"]>>[number] }[] = [];
 
 		for (const plugin of this.plugins) {
 			if (!plugin.commands) continue;
@@ -249,7 +249,7 @@ export class HookManager {
 	/**
 	 * Gets plugin names and versions.
 	 */
-	getPluginInfo(): Array<{ name: string; version: string }> {
+	getPluginInfo(): { name: string; version: string }[] {
 		return this.plugins.map((p) => ({ name: p.name, version: p.version }));
 	}
 }

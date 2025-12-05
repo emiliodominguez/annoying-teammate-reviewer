@@ -246,7 +246,7 @@ describe("CLI module (index.ts)", () => {
 				{ long: "--ci", description: "CI mode with exit codes" },
 				{ long: "--dry-run", description: "Show what would be reviewed" },
 				{ long: "--json", description: "Output results in JSON format" },
-				{ short: "-q", long: "--quiet", description: "Suppress spinner and info" }
+				{ short: "-q", long: "--quiet", description: "Suppress spinner and info" },
 			];
 
 			// Verify all expected options are defined
@@ -305,7 +305,7 @@ describe("CLI module (index.ts)", () => {
 				includedFiles: ["file1.ts", "file2.ts", "file3.ts"],
 				skippedFiles: [],
 				wouldUseBatches: false,
-				batchCount: 1
+				batchCount: 1,
 			};
 
 			// Then
@@ -324,7 +324,7 @@ describe("CLI module (index.ts)", () => {
 			const jsonOutput = {
 				verdict: "approve",
 				review: "✅ Would approve\n\nLooks good!",
-				model: "llama3.2"
+				model: "llama3.2",
 			};
 
 			// Then
@@ -337,7 +337,7 @@ describe("CLI module (index.ts)", () => {
 			// Given
 			const errorJsonOutput = {
 				error: "No changes to review",
-				verdict: null
+				verdict: null,
 			};
 
 			// Then

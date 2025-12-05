@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint-disable no-console */
-
 /**
  * @fileoverview CLI entry point for the AI Code Reviewer.
  *
@@ -86,8 +84,8 @@ import { GeminiProvider } from "./providers/gemini";
  */
 marked.use(
 	markedTerminal({
-		showSectionPrefix: false
-	}) as MarkedExtension
+		showSectionPrefix: false,
+	}) as MarkedExtension,
 );
 
 /**
@@ -127,8 +125,8 @@ interface OutputHelpers {
  * @returns Output helpers
  */
 function createOutputHelpers(options: OutputOptions): OutputHelpers {
-	const isQuiet = options.quiet || options.json || false;
-	const isJson = options.json || false;
+	const isQuiet = options.quiet ?? options.json ?? false;
+	const isJson = options.json ?? false;
 
 	return {
 		info: (message: string): void => {
@@ -149,14 +147,14 @@ function createOutputHelpers(options: OutputOptions): OutputHelpers {
 					start: () => spinner,
 					stop: () => spinner,
 					succeed: () => spinner,
-					fail: () => spinner
+					fail: () => spinner,
 				} as ReturnType<typeof ora>;
 			}
 
 			return spinner;
 		},
 		isQuiet,
-		isJson
+		isJson,
 	};
 }
 
@@ -291,7 +289,7 @@ async function main(): Promise<void> {
 	}
 
 	// Resolve the model (use provider default if not specified)
-	const model = options.model || provider.getDefaultModel();
+	const model = options.model ?? provider.getDefaultModel();
 
 	// ═══════════════════════════════════════════════════════════════════════════
 	// STEP 5: Check Provider is Available
@@ -335,7 +333,9 @@ async function main(): Promise<void> {
 			console.log(JSON.stringify({ provider: provider.name, models }, null, 2));
 		} else {
 			console.log(chalk.cyan(`\nAvailable models for ${provider.displayName}:`));
-			models.forEach((m: string) => console.log(chalk.gray(`  - ${m}`)));
+			models.forEach((m: string) => {
+				console.log(chalk.gray(`  - ${m}`));
+			});
 		}
 
 		process.exit(0);
@@ -364,7 +364,9 @@ async function main(): Promise<void> {
 
 			if (models.length > 0) {
 				output.info(chalk.cyan("\nAvailable models:"));
-				models.forEach((m: string) => output.info(chalk.gray(`  - ${m}`)));
+				models.forEach((m: string) => {
+					output.info(chalk.gray(`  - ${m}`));
+				});
 			}
 
 			process.exit(1);
@@ -383,7 +385,7 @@ async function main(): Promise<void> {
 	const reviewOptions = {
 		staged: options.staged,
 		branch: options.branch,
-		includeUntracked: options.untracked
+		includeUntracked: options.untracked,
 	};
 
 	if (!hasChanges(reviewOptions)) {
@@ -444,8 +446,8 @@ async function main(): Promise<void> {
 				`   Commits:\n${context.commits
 					.split("\n")
 					.map((commit) => `      ${commit}`)
-					.join("\n")}`
-			)
+					.join("\n")}`,
+			),
 		);
 	}
 
@@ -464,7 +466,7 @@ async function main(): Promise<void> {
 			mode: context.mode,
 			branch: context.branch,
 			fileCount: context.fileCount,
-			commits: context.commits?.split("\n") || [],
+			commits: context.commits?.split("\n") ?? [],
 			provider: provider.name,
 			model,
 			diffLength: diff.length,
@@ -472,7 +474,7 @@ async function main(): Promise<void> {
 			includedFiles: truncateResult.included,
 			skippedFiles: truncateResult.skipped,
 			wouldUseBatches: options.all && splitIntoBatches(diff, MAX_DIFF_LENGTH).length > 1,
-			batchCount: options.all ? splitIntoBatches(diff, MAX_DIFF_LENGTH).length : 1
+			batchCount: options.all ? splitIntoBatches(diff, MAX_DIFF_LENGTH).length : 1,
 		};
 
 		if (output.isJson) {
@@ -555,7 +557,7 @@ async function handleExportPrompt(options: { staged?: boolean; branch?: string |
 	const reviewOptions = {
 		staged: options.staged,
 		branch: options.branch,
-		includeUntracked: options.untracked
+		includeUntracked: options.untracked,
 	};
 
 	if (!hasChanges(reviewOptions)) {
@@ -595,15 +597,15 @@ async function reviewWithTruncation(
 	provider: LLMProvider,
 	model: string,
 	maxLength: number,
-	output: OutputHelpers
+	output: OutputHelpers,
 ): Promise<ReviewVerdict> {
 	const truncateResult = smartTruncate(diff, maxLength);
 
 	if (truncateResult.wasTruncated) {
 		output.info(
 			chalk.yellow(
-				`\n⚠️  Diff truncated: reviewing ${truncateResult.included.length} of ${truncateResult.included.length + truncateResult.skipped.length} files`
-			)
+				`\n⚠️  Diff truncated: reviewing ${truncateResult.included.length} of ${truncateResult.included.length + truncateResult.skipped.length} files`,
+			),
 		);
 		output.info(chalk.gray(`   Use --all to review everything in multiple passes`));
 
@@ -647,7 +649,7 @@ async function reviewAllInBatches(
 	provider: LLMProvider,
 	model: string,
 	maxLength: number,
-	output: OutputHelpers
+	output: OutputHelpers,
 ): Promise<ReviewVerdict> {
 	const batches = splitIntoBatches(diff, maxLength);
 
@@ -676,7 +678,7 @@ async function reviewAllInBatches(
 			batch.diff,
 			context,
 			{ current: batch.batchNumber, total: batch.totalBatches, files: batch.files },
-			allIssues
+			allIssues,
 		);
 
 		const response = await runReviewAndCollect(prompt, provider, model, `Reviewing batch ${batch.batchNumber}/${batch.totalBatches}...`, output);
@@ -759,7 +761,7 @@ async function runReviewAndCollect(
 	provider: LLMProvider,
 	model: string,
 	spinnerText: string,
-	output: OutputHelpers
+	output: OutputHelpers,
 ): Promise<string> {
 	const reviewSpinner = output.spinner(spinnerText).start();
 	let chunkCount = 0;
@@ -776,7 +778,7 @@ async function runReviewAndCollect(
 					reviewSpinner.text = `${spinnerText.replace("...", "")}${dots}`;
 				}
 			},
-			{ model }
+			{ model },
 		);
 
 		reviewSpinner.succeed(spinnerText.replace("...", ""));
@@ -854,7 +856,7 @@ async function runReview(
 	provider: LLMProvider,
 	model: string,
 	output: OutputHelpers,
-	spinnerText = `${REVIEWER_NAME} is reviewing your code...`
+	spinnerText = `${REVIEWER_NAME} is reviewing your code...`,
 ): Promise<ReviewVerdict> {
 	const reviewSpinner = output.spinner(spinnerText).start();
 	let chunkCount = 0;
@@ -871,7 +873,7 @@ async function runReview(
 					reviewSpinner.text = `${spinnerText.replace("...", "")}${dots}`;
 				}
 			},
-			{ model }
+			{ model },
 		);
 
 		reviewSpinner.stop();
@@ -885,11 +887,11 @@ async function runReview(
 						verdict,
 						review: response,
 						provider: provider.name,
-						model
+						model,
 					},
 					null,
-					2
-				)
+					2,
+				),
 			);
 
 			return verdict;

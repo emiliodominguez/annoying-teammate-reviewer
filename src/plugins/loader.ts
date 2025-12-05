@@ -39,7 +39,7 @@
  * add sandboxing for untrusted plugins.
  */
 
-import { existsSync, readdirSync } from "fs";
+import { existsSync, readFileSync, readdirSync } from "fs";
 import { join, resolve } from "path";
 import { pathToFileURL } from "url";
 
@@ -74,21 +74,21 @@ async function loadPluginFromPath(pluginPath: string): Promise<Plugin> {
 	const absolutePath = resolve(process.cwd(), pluginPath);
 
 	if (!existsSync(absolutePath)) {
-		throw new Error("Plugin not found: " + absolutePath);
+		throw new Error(`Plugin not found: ${absolutePath}`);
 	}
 
 	// Convert to file URL for ESM compatibility
 	const fileUrl = pathToFileURL(absolutePath).href;
 
 	try {
-		const module = await import(fileUrl);
-		const plugin = module.default || module;
+		const module = (await import(fileUrl)) as { default?: Plugin };
+		const plugin = module.default ?? (module as unknown as Plugin);
 
 		validatePlugin(plugin, pluginPath);
 
 		return plugin;
 	} catch (error) {
-		throw new Error("Failed to load plugin from " + pluginPath + ": " + (error as Error).message);
+		throw new Error(`Failed to load plugin from ${pluginPath}: ${(error as Error).message}`);
 	}
 }
 
@@ -107,18 +107,18 @@ async function loadPluginFromPath(pluginPath: string): Promise<Plugin> {
  */
 async function loadPluginFromPackage(packageName: string): Promise<Plugin> {
 	try {
-		const module = await import(packageName);
-		const plugin = module.default || module;
+		const module = (await import(packageName)) as { default?: Plugin };
+		const plugin = module.default ?? (module as unknown as Plugin);
 
 		validatePlugin(plugin, packageName);
 
 		return plugin;
 	} catch (error) {
 		if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
-			throw new Error("Plugin package not found: " + packageName + ". Run: npm install " + packageName);
+			throw new Error(`Plugin package not found: ${packageName}. Run: npm install ${packageName}`);
 		}
 
-		throw new Error("Failed to load plugin from " + packageName + ": " + (error as Error).message);
+		throw new Error(`Failed to load plugin from ${packageName}: ${(error as Error).message}`);
 	}
 }
 
@@ -136,17 +136,17 @@ async function loadPluginFromPackage(packageName: string): Promise<Plugin> {
  */
 function validatePlugin(plugin: unknown, source: string): asserts plugin is Plugin {
 	if (!plugin || typeof plugin !== "object") {
-		throw new Error("Plugin from " + source + " is not an object");
+		throw new Error(`Plugin from ${source} is not an object`);
 	}
 
 	const p = plugin as Record<string, unknown>;
 
 	if (typeof p.name !== "string" || p.name.length === 0) {
-		throw new Error("Plugin from " + source + " missing required 'name' property");
+		throw new Error(`Plugin from ${source} missing required 'name' property`);
 	}
 
 	if (typeof p.version !== "string" || p.version.length === 0) {
-		throw new Error("Plugin from " + source + " missing required 'version' property");
+		throw new Error(`Plugin from ${source} missing required 'version' property`);
 	}
 
 	// Validate optional hooks are functions if present
@@ -154,7 +154,7 @@ function validatePlugin(plugin: unknown, source: string): asserts plugin is Plug
 
 	for (const hook of hooks) {
 		if (p[hook] !== undefined && typeof p[hook] !== "function") {
-			throw new Error("Plugin " + p.name + ": '" + hook + "' must be a function");
+			throw new Error(`Plugin ${p.name}: '${hook}' must be a function`);
 		}
 	}
 }
@@ -195,10 +195,14 @@ function discoverNpmPlugins(): string[] {
 	}
 
 	try {
-		const packageJson = require(packageJsonPath);
-		const allDeps = {
+		const packageJsonContent = readFileSync(packageJsonPath, "utf-8");
+		const packageJson = JSON.parse(packageJsonContent) as {
+			dependencies?: Record<string, string>;
+			devDependencies?: Record<string, string>;
+		};
+		const allDeps: Record<string, string> = {
 			...packageJson.dependencies,
-			...packageJson.devDependencies
+			...packageJson.devDependencies,
 		};
 
 		return Object.keys(allDeps).filter((name) => name.startsWith("annoying-reviewer-plugin-") || name.includes("/annoying-reviewer-plugin-"));
@@ -232,7 +236,7 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			const plugin = await loadPluginFromPackage(packageName);
 
 			if (loadedNames.has(plugin.name)) {
-				console.warn("Warning: Plugin '" + plugin.name + "' already loaded, skipping " + packageName);
+				console.warn(`Warning: Plugin '${plugin.name}' already loaded, skipping ${packageName}`);
 
 				continue;
 			}
@@ -241,10 +245,10 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			loadedPlugins.push({
 				plugin,
 				source: "npm",
-				location: packageName
+				location: packageName,
 			});
 		} catch (error) {
-			console.warn("Warning: Failed to load npm plugin " + packageName + ": " + (error as Error).message);
+			console.warn(`Warning: Failed to load npm plugin ${packageName}: ${(error as Error).message}`);
 		}
 	}
 
@@ -256,7 +260,7 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			const plugin = await loadPluginFromPath(pluginPath);
 
 			if (loadedNames.has(plugin.name)) {
-				console.warn("Warning: Plugin '" + plugin.name + "' already loaded, skipping " + pluginPath);
+				console.warn(`Warning: Plugin '${plugin.name}' already loaded, skipping ${pluginPath}`);
 
 				continue;
 			}
@@ -265,10 +269,10 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			loadedPlugins.push({
 				plugin,
 				source: "local",
-				location: pluginPath
+				location: pluginPath,
 			});
 		} catch (error) {
-			console.warn("Warning: Failed to load local plugin " + pluginPath + ": " + (error as Error).message);
+			console.warn(`Warning: Failed to load local plugin ${pluginPath}: ${(error as Error).message}`);
 		}
 	}
 
@@ -278,7 +282,7 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			const plugin = await loadPluginFromPath(pluginPath);
 
 			if (loadedNames.has(plugin.name)) {
-				console.warn("Warning: Plugin '" + plugin.name + "' already loaded, replacing with CLI version");
+				console.warn(`Warning: Plugin '${plugin.name}' already loaded, replacing with CLI version`);
 				// Remove the previous version
 				const index = loadedPlugins.findIndex((p) => p.plugin.name === plugin.name);
 
@@ -291,11 +295,11 @@ export async function loadPlugins(cliPlugins: string[] = []): Promise<LoadedPlug
 			loadedPlugins.push({
 				plugin,
 				source: "cli",
-				location: pluginPath
+				location: pluginPath,
 			});
 		} catch (error) {
 			// CLI plugins are explicit, so throw on error
-			throw new Error("Failed to load plugin " + pluginPath + ": " + (error as Error).message);
+			throw new Error(`Failed to load plugin ${pluginPath}: ${(error as Error).message}`);
 		}
 	}
 
@@ -332,9 +336,9 @@ export async function initializePlugins(plugins: LoadedPlugin[], context: Plugin
 				}
 			}
 
-			context.logger.debug("Loaded plugin: " + plugin.name + " v" + plugin.version + " from " + source + " (" + location + ")");
+			context.logger.debug(`Loaded plugin: ${plugin.name} v${plugin.version} from ${source} (${location})`);
 		} catch (error) {
-			throw new Error("Failed to initialize plugin " + plugin.name + ": " + (error as Error).message);
+			throw new Error(`Failed to initialize plugin ${plugin.name}: ${(error as Error).message}`);
 		}
 	}
 }

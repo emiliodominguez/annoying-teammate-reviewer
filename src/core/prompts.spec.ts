@@ -6,7 +6,7 @@ import {
 	buildBatchReviewPrompt,
 	buildCommitMessagePrompt,
 	buildConsolidationPrompt,
-	buildReviewPrompt
+	buildReviewPrompt,
 } from "./prompts";
 
 describe("Prompts module", () => {
@@ -119,7 +119,7 @@ describe("Prompts module", () => {
 			branch: "feature/test-branch",
 			files: ["src/file1.ts", "src/file2.ts"],
 			fileCount: 2,
-			mode: "working tree"
+			mode: "working tree",
 		};
 
 		const mockDiff = `diff --git a/src/file1.ts b/src/file1.ts
@@ -201,7 +201,7 @@ describe("Prompts module", () => {
 			// Given
 			const contextWithCommits: ReviewContext = {
 				...mockContext,
-				commits: "abc123 feature(test): Add feature"
+				commits: "abc123 feature(test): Add feature",
 			};
 
 			// When
@@ -217,7 +217,7 @@ describe("Prompts module", () => {
 				branch: "main",
 				files: [],
 				fileCount: 0,
-				mode: "staged changes"
+				mode: "staged changes",
 			};
 
 			// When
@@ -296,7 +296,7 @@ describe("Prompts module", () => {
 			branch: "feature/batch-test",
 			files: ["src/file1.ts"],
 			fileCount: 1,
-			mode: "working tree"
+			mode: "working tree",
 		};
 
 		const mockDiff = `diff --git a/src/file1.ts b/src/file1.ts
@@ -402,7 +402,7 @@ describe("Prompts module", () => {
 			branch: "feature/consolidation-test",
 			files: ["src/file1.ts", "src/file2.ts"],
 			fileCount: 2,
-			mode: "branch diff (main...HEAD)"
+			mode: "branch diff (main...HEAD)",
 		};
 
 		test("should include file count", () => {

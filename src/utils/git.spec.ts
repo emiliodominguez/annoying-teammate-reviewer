@@ -15,7 +15,7 @@ const mockExecSync = jest.fn<(cmd: string, opts?: { encoding: string }) => strin
 
 // Mock the child_process module before importing git.js
 jest.unstable_mockModule("child_process", () => ({
-	execSync: mockExecSync
+	execSync: mockExecSync,
 }));
 
 // Dynamic import after mock setup (required for ESM)
@@ -34,7 +34,7 @@ const {
 	getUntrackedDiff,
 	getUntrackedFiles,
 	getUnstagedDiff,
-	hasChanges
+	hasChanges,
 } = await import("./git");
 
 // Import types separately (they don't need mocking)
@@ -665,7 +665,7 @@ describe("Git module", () => {
 				branch: "feature/test",
 				files: ["src/file1.ts", "src/file2.ts"],
 				fileCount: 2,
-				mode: "working tree"
+				mode: "working tree",
 			};
 
 			// When
@@ -683,7 +683,7 @@ describe("Git module", () => {
 				files: ["src/file.ts"],
 				fileCount: 1,
 				mode: "branch diff (main...HEAD)",
-				commits: "abc123 First commit\ndef456 Second commit"
+				commits: "abc123 First commit\ndef456 Second commit",
 			};
 
 			// When
@@ -699,7 +699,7 @@ describe("Git module", () => {
 			const options: ReviewOptions = {
 				staged: true,
 				branch: "develop",
-				includeUntracked: true
+				includeUntracked: true,
 			};
 
 			// When

@@ -4,12 +4,12 @@ AI-powered code reviewer that mimics your annoying teammate's review style. Supp
 
 ## Supported Providers
 
-| Provider | Description                           | Requires        |
-| -------- | ------------------------------------- | --------------- |
+| Provider | Description                             | Requires         |
+| -------- | --------------------------------------- | ---------------- |
 | Ollama   | Local LLM - no data leaves your machine | Ollama installed |
-| Claude   | Anthropic's Claude models             | API key         |
-| OpenAI   | GPT-4o and other OpenAI models        | API key         |
-| Gemini   | Google's Gemini models                | API key         |
+| Claude   | Anthropic's Claude models               | API key          |
+| OpenAI   | GPT-4o and other OpenAI models          | API key          |
+| Gemini   | Google's Gemini models                  | API key          |
 
 ## Prerequisites
 
@@ -173,23 +173,23 @@ npm run review -- -q
 
 ## CLI Options
 
-| Option                    | Description                                                     |
-| ------------------------- | --------------------------------------------------------------- |
-| `-s, --staged`            | Review only staged changes                                      |
-| `-b, --branch [target]`   | Review changes compared to target branch (defaults to main)     |
-| `-p, --provider <name>`   | LLM provider to use (ollama, claude, openai, gemini)            |
-| `-m, --model <model>`     | Model to use (defaults to provider's default)                   |
-| `-a, --all`               | Review all files in batches (iterative mode)                    |
-| `-u, --untracked`         | Include untracked (new) files in the review                     |
-| `--list-providers`        | List available LLM providers                                    |
-| `--list-models`           | List available models for the selected provider                 |
-| `--export-prompt`         | Export the prompt to stdout for use with other LLMs             |
-| `--ci`                    | CI mode: exit code 1 if reviewer would request changes or block |
-| `--dry-run`               | Show what would be reviewed without calling the LLM             |
-| `--json`                  | Output results in JSON format (for CI/CD integration)           |
-| `-q, --quiet`             | Suppress spinner and info, only show review result              |
-| `-h, --help`              | Display help                                                    |
-| `-V, --version`           | Display version                                                 |
+| Option                  | Description                                                     |
+| ----------------------- | --------------------------------------------------------------- |
+| `-s, --staged`          | Review only staged changes                                      |
+| `-b, --branch [target]` | Review changes compared to target branch (defaults to main)     |
+| `-p, --provider <name>` | LLM provider to use (ollama, claude, openai, gemini)            |
+| `-m, --model <model>`   | Model to use (defaults to provider's default)                   |
+| `-a, --all`             | Review all files in batches (iterative mode)                    |
+| `-u, --untracked`       | Include untracked (new) files in the review                     |
+| `--list-providers`      | List available LLM providers                                    |
+| `--list-models`         | List available models for the selected provider                 |
+| `--export-prompt`       | Export the prompt to stdout for use with other LLMs             |
+| `--ci`                  | CI mode: exit code 1 if reviewer would request changes or block |
+| `--dry-run`             | Show what would be reviewed without calling the LLM             |
+| `--json`                | Output results in JSON format (for CI/CD integration)           |
+| `-q, --quiet`           | Suppress spinner and info, only show review result              |
+| `-h, --help`            | Display help                                                    |
+| `-V, --version`         | Display version                                                 |
 
 ## What It Reviews
 
@@ -327,39 +327,39 @@ Edit `src/prompts.ts` to adjust:
 
 #### Provider Selection
 
-| Variable        | Description               | Default  |
-| --------------- | ------------------------- | -------- |
-| `LLM_PROVIDER`  | Default LLM provider      | `ollama` |
+| Variable       | Description          | Default  |
+| -------------- | -------------------- | -------- |
+| `LLM_PROVIDER` | Default LLM provider | `ollama` |
 
 #### Ollama
 
-| Variable               | Description          | Default                  |
-| ---------------------- | -------------------- | ------------------------ |
-| `OLLAMA_BASE_URL`      | Ollama API URL       | `http://localhost:11434` |
-| `OLLAMA_DEFAULT_MODEL` | Default model        | `codellama`              |
+| Variable               | Description    | Default                  |
+| ---------------------- | -------------- | ------------------------ |
+| `OLLAMA_BASE_URL`      | Ollama API URL | `http://localhost:11434` |
+| `OLLAMA_DEFAULT_MODEL` | Default model  | `codellama`              |
 
 #### Claude (Anthropic)
 
-| Variable               | Description          | Default                      |
-| ---------------------- | -------------------- | ---------------------------- |
-| `ANTHROPIC_API_KEY`    | Anthropic API key    | Required                     |
-| `CLAUDE_DEFAULT_MODEL` | Default model        | `claude-sonnet-4-20250514`   |
+| Variable               | Description       | Default                    |
+| ---------------------- | ----------------- | -------------------------- |
+| `ANTHROPIC_API_KEY`    | Anthropic API key | Required                   |
+| `CLAUDE_DEFAULT_MODEL` | Default model     | `claude-sonnet-4-20250514` |
 
 #### OpenAI
 
-| Variable               | Description          | Default  |
-| ---------------------- | -------------------- | -------- |
-| `OPENAI_API_KEY`       | OpenAI API key       | Required |
-| `OPENAI_BASE_URL`      | OpenAI API URL       | Default  |
-| `OPENAI_DEFAULT_MODEL` | Default model        | `gpt-4o` |
+| Variable               | Description    | Default  |
+| ---------------------- | -------------- | -------- |
+| `OPENAI_API_KEY`       | OpenAI API key | Required |
+| `OPENAI_BASE_URL`      | OpenAI API URL | Default  |
+| `OPENAI_DEFAULT_MODEL` | Default model  | `gpt-4o` |
 
 #### Gemini (Google)
 
-| Variable               | Description          | Default            |
-| ---------------------- | -------------------- | ------------------ |
-| `GOOGLE_AI_API_KEY`    | Google AI API key    | Required           |
-| `GEMINI_API_KEY`       | Alias for above      | -                  |
-| `GEMINI_DEFAULT_MODEL` | Default model        | `gemini-2.0-flash` |
+| Variable               | Description       | Default            |
+| ---------------------- | ----------------- | ------------------ |
+| `GOOGLE_AI_API_KEY`    | Google AI API key | Required           |
+| `GEMINI_API_KEY`       | Alias for above   | -                  |
+| `GEMINI_DEFAULT_MODEL` | Default model     | `gemini-2.0-flash` |
 
 Example usage:
 

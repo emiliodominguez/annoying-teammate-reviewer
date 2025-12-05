@@ -161,11 +161,11 @@ export interface CommandDefinition {
 	/** Description for --help */
 	description: string;
 	/** Options/flags for the command */
-	options?: Array<{
+	options?: {
 		flags: string;
 		description: string;
 		defaultValue?: string | boolean | number;
-	}>;
+	}[];
 	/** Handler function for the command */
 	handler(args: Record<string, unknown>): Promise<void>;
 }

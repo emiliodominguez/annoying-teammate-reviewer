@@ -158,8 +158,8 @@ export class OllamaProvider implements LLMProvider {
 	 * @param config - Optional configuration
 	 */
 	constructor(config?: ProviderConfig) {
-		this.baseUrl = config?.baseUrl || process.env.OLLAMA_BASE_URL || DEFAULT_BASE_URL;
-		this.defaultModel = config?.defaultModel || process.env.OLLAMA_DEFAULT_MODEL || DEFAULT_MODEL;
+		this.baseUrl = config?.baseUrl ?? process.env.OLLAMA_BASE_URL ?? DEFAULT_BASE_URL;
+		this.defaultModel = config?.defaultModel ?? process.env.OLLAMA_DEFAULT_MODEL ?? DEFAULT_MODEL;
 	}
 
 	/**
@@ -206,7 +206,7 @@ export class OllamaProvider implements LLMProvider {
 			if (!response.ok) return [];
 			const data = (await response.json()) as OllamaTagsResponse;
 
-			return data.models?.map((model) => model.name) || [];
+			return data.models?.map((model) => model.name) ?? [];
 		} catch {
 			return [];
 		}
@@ -249,7 +249,7 @@ export class OllamaProvider implements LLMProvider {
 	 * even if total generation time is the same.
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
-		const model = options?.model || this.defaultModel;
+		const model = options?.model ?? this.defaultModel;
 
 		const response = await fetch(`${this.baseUrl}/api/generate`, {
 			method: "POST",
@@ -260,9 +260,9 @@ export class OllamaProvider implements LLMProvider {
 				stream: true,
 				options: {
 					temperature: options?.temperature ?? 0.7,
-					num_predict: options?.maxTokens ?? 2048
-				}
-			})
+					num_predict: options?.maxTokens ?? 2048,
+				},
+			}),
 		});
 
 		if (!response.ok) {

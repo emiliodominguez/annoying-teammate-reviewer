@@ -16,7 +16,7 @@ describe("Provider types module", () => {
 			const options: GenerateOptions = {
 				model: "test-model",
 				temperature: 0.7,
-				maxTokens: 2048
+				maxTokens: 2048,
 			};
 
 			// When / Then
@@ -38,7 +38,7 @@ describe("Provider types module", () => {
 		test("should allow partial GenerateOptions", () => {
 			// Given
 			const options: GenerateOptions = {
-				model: "llama3.2"
+				model: "llama3.2",
 			};
 
 			// When / Then
@@ -53,7 +53,7 @@ describe("Provider types module", () => {
 			const config: ProviderConfig = {
 				apiKey: "sk-test-key",
 				baseUrl: "http://localhost:11434",
-				defaultModel: "llama3.2"
+				defaultModel: "llama3.2",
 			};
 
 			// When / Then
@@ -87,7 +87,7 @@ describe("Provider types module", () => {
 
 					return "Hello";
 				},
-				getDefaultModel: () => "model-1"
+				getDefaultModel: () => "model-1",
 			};
 
 			// When / Then
@@ -115,7 +115,7 @@ describe("Provider types module", () => {
 
 					return "chunk1chunk2";
 				},
-				getDefaultModel: () => "test-model"
+				getDefaultModel: () => "test-model",
 			};
 
 			// When
@@ -144,7 +144,7 @@ describe("Provider types module", () => {
 				private model: string;
 
 				constructor(config?: ProviderConfig) {
-					this.model = config?.defaultModel || "default-model";
+					this.model = config?.defaultModel ?? "default-model";
 				}
 
 				async checkHealth() {

@@ -4,8 +4,7 @@
 
 import { describe, expect, test } from "@jest/globals";
 
-import { initializePlugins, loadPlugins } from "./loader";
-import type { LoadedPlugin } from "./loader";
+import { initializePlugins, loadPlugins, type LoadedPlugin } from "./loader";
 import type { Plugin, PluginContext } from "./types";
 
 describe("Plugin loader module", () => {
@@ -31,10 +30,10 @@ describe("Plugin loader module", () => {
 			const loadedPlugin: LoadedPlugin = {
 				plugin: {
 					name: "test",
-					version: "1.0.0"
+					version: "1.0.0",
 				},
 				source: "cli",
-				location: "./test-plugin.js"
+				location: "./test-plugin.js",
 			};
 
 			// When / Then
@@ -45,14 +44,14 @@ describe("Plugin loader module", () => {
 
 		test("should support all source types", () => {
 			// Given
-			const sources: Array<"cli" | "local" | "npm"> = ["cli", "local", "npm"];
+			const sources: ("cli" | "local" | "npm")[] = ["cli", "local", "npm"];
 
 			// When / Then
 			for (const source of sources) {
 				const loadedPlugin: LoadedPlugin = {
 					plugin: { name: "test", version: "1.0.0" },
 					source,
-					location: "test"
+					location: "test",
 				};
 
 				expect(loadedPlugin.source).toEqual(source);
@@ -69,15 +68,15 @@ describe("Plugin loader module", () => {
 				version: "1.0.0",
 				init: async () => {
 					initCalled = true;
-				}
+				},
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "cli",
-					location: "./plugin.js"
-				}
+					location: "./plugin.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
@@ -85,15 +84,15 @@ describe("Plugin loader module", () => {
 					providerName: "ollama",
 					model: "llama3.2",
 					isQuiet: false,
-					isJson: false
+					isJson: false,
 				},
 				logger: {
 					info: () => {},
 					warn: () => {},
 					error: () => {},
-					debug: () => {}
+					debug: () => {},
 				},
-				registerProvider: () => {}
+				registerProvider: () => {},
 			};
 
 			// When
@@ -107,21 +106,21 @@ describe("Plugin loader module", () => {
 			// Given
 			const mockPlugin: Plugin = {
 				name: "no-init",
-				version: "1.0.0"
+				version: "1.0.0",
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "local",
-					location: "./plugin.js"
-				}
+					location: "./plugin.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
 				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
-				registerProvider: () => {}
+				registerProvider: () => {},
 			};
 
 			// When / Then - Should not throw
@@ -136,16 +135,16 @@ describe("Plugin loader module", () => {
 			const mockPlugin: Plugin = {
 				name: "provider-plugin",
 				version: "1.0.0",
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				providers: () => [mockProvider as any]
+
+				providers: () => [mockProvider as any],
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "npm",
-					location: "annoying-reviewer-plugin-custom"
-				}
+					location: "annoying-reviewer-plugin-custom",
+				},
 			];
 
 			const mockContext: PluginContext = {
@@ -153,7 +152,7 @@ describe("Plugin loader module", () => {
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
 				registerProvider: (provider) => {
 					registeredProviders.push(provider);
-				}
+				},
 			};
 
 			// When
@@ -171,27 +170,25 @@ describe("Plugin loader module", () => {
 				version: "1.0.0",
 				init: async () => {
 					throw new Error("Init failed");
-				}
+				},
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "cli",
-					location: "./plugin.js"
-				}
+					location: "./plugin.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
 				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
-				registerProvider: () => {}
+				registerProvider: () => {},
 			};
 
 			// When / Then
-			await expect(initializePlugins(loadedPlugins, mockContext)).rejects.toThrow(
-				"Failed to initialize plugin failing-plugin: Init failed"
-			);
+			await expect(initializePlugins(loadedPlugins, mockContext)).rejects.toThrow("Failed to initialize plugin failing-plugin: Init failed");
 		});
 
 		test("should log successful plugin loading", async () => {
@@ -199,15 +196,15 @@ describe("Plugin loader module", () => {
 			const debugLogs: string[] = [];
 			const mockPlugin: Plugin = {
 				name: "logged-plugin",
-				version: "2.0.0"
+				version: "2.0.0",
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "local",
-					location: "./plugins/logged-plugin.js"
-				}
+					location: "./plugins/logged-plugin.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
@@ -216,9 +213,9 @@ describe("Plugin loader module", () => {
 					info: () => {},
 					warn: () => {},
 					error: () => {},
-					debug: (msg) => debugLogs.push(msg)
+					debug: (msg) => debugLogs.push(msg),
 				},
-				registerProvider: () => {}
+				registerProvider: () => {},
 			};
 
 			// When
@@ -241,10 +238,10 @@ describe("Plugin loader module", () => {
 						version: "1.0.0",
 						init: async () => {
 							initOrder.push("first");
-						}
+						},
 					},
 					source: "npm",
-					location: "package-1"
+					location: "package-1",
 				},
 				{
 					plugin: {
@@ -252,10 +249,10 @@ describe("Plugin loader module", () => {
 						version: "1.0.0",
 						init: async () => {
 							initOrder.push("second");
-						}
+						},
 					},
 					source: "local",
-					location: "./local-plugin.js"
+					location: "./local-plugin.js",
 				},
 				{
 					plugin: {
@@ -263,17 +260,17 @@ describe("Plugin loader module", () => {
 						version: "1.0.0",
 						init: async () => {
 							initOrder.push("third");
-						}
+						},
 					},
 					source: "cli",
-					location: "./cli-plugin.js"
-				}
+					location: "./cli-plugin.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
 				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
-				registerProvider: () => {}
+				registerProvider: () => {},
 			};
 
 			// When
@@ -295,16 +292,16 @@ describe("Plugin loader module", () => {
 				init: async () => {
 					initCalled = true;
 				},
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				providers: () => [mockProvider as any]
+
+				providers: () => [mockProvider as any],
 			};
 
 			const loadedPlugins: LoadedPlugin[] = [
 				{
 					plugin: mockPlugin,
 					source: "cli",
-					location: "./combo.js"
-				}
+					location: "./combo.js",
+				},
 			];
 
 			const mockContext: PluginContext = {
@@ -312,7 +309,7 @@ describe("Plugin loader module", () => {
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
 				registerProvider: (provider) => {
 					registeredProviders.push(provider);
-				}
+				},
 			};
 
 			// When
@@ -329,7 +326,7 @@ describe("Plugin loader module", () => {
 			// Given
 			const validPlugin: Plugin = {
 				name: "valid-name",
-				version: "1.0.0"
+				version: "1.0.0",
 			};
 
 			// When / Then
@@ -341,7 +338,7 @@ describe("Plugin loader module", () => {
 			// Given
 			const validPlugin: Plugin = {
 				name: "test",
-				version: "1.2.3"
+				version: "1.2.3",
 			};
 
 			// When / Then
@@ -359,7 +356,7 @@ describe("Plugin loader module", () => {
 				afterResponse: async () => {},
 				beforeVerdict: async () => {},
 				commands: () => [],
-				providers: () => []
+				providers: () => [],
 			};
 
 			// When / Then

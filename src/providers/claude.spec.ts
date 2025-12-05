@@ -7,15 +7,15 @@ import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globa
 import { ClaudeProvider } from "./claude";
 
 // Mock the @anthropic-ai/sdk module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockCreate = jest.fn<() => Promise<AsyncIterable<any>>>();
 
 jest.unstable_mockModule("@anthropic-ai/sdk", () => ({
 	default: class MockAnthropic {
 		messages = {
-			create: mockCreate
+			create: mockCreate,
 		};
-	}
+	},
 }));
 
 describe("ClaudeProvider", () => {
@@ -47,7 +47,7 @@ describe("ClaudeProvider", () => {
 			// Given
 			const configuredProvider = new ClaudeProvider({
 				apiKey: "custom-key",
-				defaultModel: "claude-3-opus-20240229"
+				defaultModel: "claude-3-opus-20240229",
 			});
 
 			// When / Then
@@ -183,7 +183,7 @@ describe("ClaudeProvider", () => {
 
 			// When / Then
 			await expect(providerWithoutKey.streamResponse("Test prompt", jest.fn())).rejects.toThrow(
-				"ANTHROPIC_API_KEY environment variable is required"
+				"ANTHROPIC_API_KEY environment variable is required",
 			);
 		});
 
@@ -193,7 +193,7 @@ describe("ClaudeProvider", () => {
 				{ type: "content_block_delta", delta: { type: "text_delta", text: "Hello" } },
 				{ type: "content_block_delta", delta: { type: "text_delta", text: " World" } },
 				{ type: "content_block_delta", delta: { type: "text_delta", text: "!" } },
-				{ type: "message_stop" }
+				{ type: "message_stop" },
 			];
 
 			mockCreate.mockResolvedValueOnce(
@@ -201,7 +201,7 @@ describe("ClaudeProvider", () => {
 					for (const event of mockEvents) {
 						yield event;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -221,7 +221,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -230,8 +230,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "claude-sonnet-4-20250514"
-				})
+					model: "claude-sonnet-4-20250514",
+				}),
 			);
 		});
 
@@ -240,7 +240,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -249,8 +249,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "claude-3-opus-20240229"
-				})
+					model: "claude-3-opus-20240229",
+				}),
 			);
 		});
 
@@ -259,7 +259,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -268,8 +268,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					max_tokens: 1000
-				})
+					max_tokens: 1000,
+				}),
 			);
 		});
 
@@ -278,7 +278,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -287,8 +287,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					max_tokens: 2048
-				})
+					max_tokens: 2048,
+				}),
 			);
 		});
 
@@ -297,7 +297,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -306,8 +306,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					messages: [{ role: "user", content: "My test prompt" }]
-				})
+					messages: [{ role: "user", content: "My test prompt" }],
+				}),
 			);
 		});
 
@@ -316,7 +316,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When
@@ -325,8 +325,8 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					stream: true
-				})
+					stream: true,
+				}),
 			);
 		});
 
@@ -337,7 +337,7 @@ describe("ClaudeProvider", () => {
 				{ type: "content_block_start" },
 				{ type: "content_block_delta", delta: { type: "text_delta", text: "Hello" } },
 				{ type: "content_block_stop" },
-				{ type: "message_stop" }
+				{ type: "message_stop" },
 			];
 
 			mockCreate.mockResolvedValueOnce(
@@ -345,7 +345,7 @@ describe("ClaudeProvider", () => {
 					for (const event of mockEvents) {
 						yield event;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -362,7 +362,7 @@ describe("ClaudeProvider", () => {
 			// Given
 			const mockEvents = [
 				{ type: "content_block_delta", delta: { type: "text_delta" } }, // No text property
-				{ type: "content_block_delta", delta: { type: "text_delta", text: "Hello" } }
+				{ type: "content_block_delta", delta: { type: "text_delta", text: "Hello" } },
 			];
 
 			mockCreate.mockResolvedValueOnce(
@@ -370,7 +370,7 @@ describe("ClaudeProvider", () => {
 					for (const event of mockEvents) {
 						yield event;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -388,7 +388,7 @@ describe("ClaudeProvider", () => {
 			mockCreate.mockResolvedValue(
 				(async function* () {
 					yield { type: "content_block_delta", delta: { type: "text_delta", text: "test" } };
-				})()
+				})(),
 			);
 
 			// When - Call streamResponse multiple times

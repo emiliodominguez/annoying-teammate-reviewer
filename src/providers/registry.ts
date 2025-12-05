@@ -118,7 +118,7 @@ export class ProviderRegistry {
 		const normalizedName = name.toLowerCase();
 
 		this.providers.set(normalizedName, {
-			factory: () => new providerClass(config)
+			factory: () => new providerClass(config),
 		});
 	}
 
@@ -136,7 +136,7 @@ export class ProviderRegistry {
 
 		this.providers.set(normalizedName, {
 			factory: () => provider,
-			instance: provider
+			instance: provider,
 		});
 	}
 
@@ -164,9 +164,7 @@ export class ProviderRegistry {
 		}
 
 		// Lazy instantiation
-		if (!entry.instance) {
-			entry.instance = entry.factory();
-		}
+		entry.instance ??= entry.factory();
 
 		return entry.instance;
 	}
@@ -223,7 +221,7 @@ export class ProviderRegistry {
 		}
 
 		// Fall back to first registered provider
-		const firstName = this.providers.keys().next().value as string;
+		const firstName = this.providers.keys().next().value!;
 
 		return this.get(firstName)!;
 	}

@@ -80,11 +80,11 @@ interface OpenAIMessage {
 }
 
 interface OpenAIStreamChunk {
-	choices: Array<{
+	choices: {
 		delta: {
 			content?: string;
 		};
-	}>;
+	}[];
 }
 
 interface OpenAIClient {
@@ -143,9 +143,9 @@ export class OpenAIProvider implements LLMProvider {
 	 * @param config - Provider configuration
 	 */
 	constructor(config?: ProviderConfig) {
-		this.apiKey = config?.apiKey || process.env.OPENAI_API_KEY;
-		this.baseUrl = config?.baseUrl || process.env.OPENAI_BASE_URL;
-		this.defaultModel = config?.defaultModel || process.env.OPENAI_DEFAULT_MODEL || DEFAULT_MODEL;
+		this.apiKey = config?.apiKey ?? process.env.OPENAI_API_KEY;
+		this.baseUrl = config?.baseUrl ?? process.env.OPENAI_BASE_URL;
+		this.defaultModel = config?.defaultModel ?? process.env.OPENAI_DEFAULT_MODEL ?? DEFAULT_MODEL;
 	}
 
 	/**
@@ -170,7 +170,7 @@ export class OpenAIProvider implements LLMProvider {
 
 			this.client = new OpenAI({
 				apiKey: this.apiKey,
-				baseURL: this.baseUrl
+				baseURL: this.baseUrl,
 			}) as unknown as OpenAIClient;
 
 			return this.client;
@@ -212,7 +212,7 @@ export class OpenAIProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) || modelName.includes(model));
+		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
 	}
 
 	/**
@@ -231,14 +231,14 @@ export class OpenAIProvider implements LLMProvider {
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
 		const client = await this.getClient();
-		const model = options?.model || this.defaultModel;
+		const model = options?.model ?? this.defaultModel;
 
 		const stream = await client.chat.completions.create({
 			model,
 			messages: [{ role: "user", content: prompt }],
 			max_tokens: options?.maxTokens ?? 2048,
 			temperature: options?.temperature ?? 0.7,
-			stream: true
+			stream: true,
 		});
 
 		let fullResponse = "";

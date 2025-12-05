@@ -286,6 +286,4 @@ export interface LLMProvider {
  * This allows lazy initialization - we only create the provider
  * when the user actually selects it.
  */
-export interface LLMProviderConstructor {
-	new (config?: ProviderConfig): LLMProvider;
-}
+export type LLMProviderConstructor = new (config?: ProviderConfig) => LLMProvider;

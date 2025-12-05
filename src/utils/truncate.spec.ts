@@ -61,7 +61,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "src/big.ts", lineCount: 100 },
-					{ path: "src/small.ts", lineCount: 5 }
+					{ path: "src/small.ts", lineCount: 5 },
 				]);
 				const maxLength = 500;
 
@@ -88,7 +88,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "src/keep.ts", lineCount: 10 },
-					{ path: "src/skip.ts", lineCount: 100 }
+					{ path: "src/skip.ts", lineCount: 100 },
 				]);
 				const maxLength = 400;
 
@@ -104,7 +104,7 @@ ${lines}`;
 				const diff = createMultiFileDiff([
 					{ path: "src/keep.ts", lineCount: 10 },
 					{ path: "src/skip1.ts", lineCount: 100 },
-					{ path: "src/skip2.ts", lineCount: 100 }
+					{ path: "src/skip2.ts", lineCount: 100 },
 				]);
 				const maxLength = 400;
 
@@ -123,7 +123,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "package.json", lineCount: 50 },
-					{ path: "src/important.ts", lineCount: 50 }
+					{ path: "src/important.ts", lineCount: 50 },
 				]);
 				const maxLength = 800;
 
@@ -141,7 +141,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "src/feature.spec.ts", lineCount: 50 },
-					{ path: "src/feature.ts", lineCount: 50 }
+					{ path: "src/feature.ts", lineCount: 50 },
 				]);
 				const maxLength = 800;
 
@@ -159,7 +159,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "package-lock.json", lineCount: 100 },
-					{ path: "src/app.ts", lineCount: 10 }
+					{ path: "src/app.ts", lineCount: 10 },
 				]);
 				const maxLength = 400;
 
@@ -241,7 +241,7 @@ ${lines}`;
 					{ path: "src/skip4.ts", lineCount: 50 },
 					{ path: "src/skip5.ts", lineCount: 50 },
 					{ path: "src/skip6.ts", lineCount: 50 },
-					{ path: "src/skip7.ts", lineCount: 50 }
+					{ path: "src/skip7.ts", lineCount: 50 },
 				]);
 				const maxLength = 300; // Very small to ensure many files are skipped
 
@@ -290,7 +290,7 @@ ${lines}`;
 				const diff = createMultiFileDiff([
 					{ path: "src/file1.ts", lineCount: 50 },
 					{ path: "src/file2.ts", lineCount: 50 },
-					{ path: "src/file3.ts", lineCount: 50 }
+					{ path: "src/file3.ts", lineCount: 50 },
 				]);
 				const maxLength = 800;
 
@@ -306,7 +306,7 @@ ${lines}`;
 				const diff = createMultiFileDiff([
 					{ path: "src/file1.ts", lineCount: 50 },
 					{ path: "src/file2.ts", lineCount: 50 },
-					{ path: "src/file3.ts", lineCount: 50 }
+					{ path: "src/file3.ts", lineCount: 50 },
 				]);
 				const maxLength = 800;
 
@@ -326,7 +326,7 @@ ${lines}`;
 				const diff = createMultiFileDiff([
 					{ path: "src/file1.ts", lineCount: 50 },
 					{ path: "src/file2.ts", lineCount: 50 },
-					{ path: "src/file3.ts", lineCount: 50 }
+					{ path: "src/file3.ts", lineCount: 50 },
 				]);
 				const maxLength = 800;
 
@@ -362,7 +362,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "src/small.ts", lineCount: 5 },
-					{ path: "src/huge.ts", lineCount: 500 }
+					{ path: "src/huge.ts", lineCount: 500 },
 				]);
 				const maxLength = 500;
 
@@ -395,7 +395,7 @@ ${lines}`;
 				// Given
 				const diff = createMultiFileDiff([
 					{ path: "package.json", lineCount: 30 },
-					{ path: "src/code.ts", lineCount: 30 }
+					{ path: "src/code.ts", lineCount: 30 },
 				]);
 				const maxLength = 600;
 

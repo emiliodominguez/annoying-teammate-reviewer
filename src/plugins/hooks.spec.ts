@@ -19,7 +19,7 @@ function createMockLogger(): Logger & { warnings: string[] } {
 		info: () => {},
 		warn: (msg: string) => warnings.push(msg),
 		error: () => {},
-		debug: () => {}
+		debug: () => {},
 	};
 }
 
@@ -30,7 +30,7 @@ function createMockPlugin(overrides: Partial<Plugin> = {}): Plugin {
 	return {
 		name: "mock-plugin",
 		version: "1.0.0",
-		...overrides
+		...overrides,
 	};
 }
 
@@ -41,7 +41,7 @@ function createLoadedPlugin(plugin: Plugin): LoadedPlugin {
 	return {
 		plugin,
 		source: "cli",
-		location: "./mock-plugin.js"
+		location: "./mock-plugin.js",
 	};
 }
 
@@ -51,7 +51,7 @@ describe("HookManager", () => {
 	const mockReviewContext: ReviewContext = {
 		mode: "staged changes",
 		branch: "feature/test",
-		fileCount: 3
+		fileCount: 3,
 	};
 
 	beforeEach(() => {
@@ -95,7 +95,7 @@ describe("HookManager", () => {
 			const plugins = [
 				createLoadedPlugin(createMockPlugin({ name: "a" })),
 				createLoadedPlugin(createMockPlugin({ name: "b" })),
-				createLoadedPlugin(createMockPlugin({ name: "c" }))
+				createLoadedPlugin(createMockPlugin({ name: "c" })),
 			];
 			const manager = new HookManager(plugins, mockLogger);
 
@@ -120,7 +120,7 @@ describe("HookManager", () => {
 			// Given
 			const plugins = [
 				createLoadedPlugin(createMockPlugin({ name: "plugin-a", version: "1.0.0" })),
-				createLoadedPlugin(createMockPlugin({ name: "plugin-b", version: "2.0.0" }))
+				createLoadedPlugin(createMockPlugin({ name: "plugin-b", version: "2.0.0" })),
 			];
 			const manager = new HookManager(plugins, mockLogger);
 
@@ -130,7 +130,7 @@ describe("HookManager", () => {
 			// Then
 			expect(info).toEqual([
 				{ name: "plugin-a", version: "1.0.0" },
-				{ name: "plugin-b", version: "2.0.0" }
+				{ name: "plugin-b", version: "2.0.0" },
 			]);
 		});
 	});
@@ -164,7 +164,7 @@ describe("HookManager", () => {
 			const plugin = createMockPlugin({
 				beforePrompt: async (context) => {
 					context.addToPrompt(" Additional instructions.");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -180,7 +180,7 @@ describe("HookManager", () => {
 			const plugin = createMockPlugin({
 				beforePrompt: async (context) => {
 					context.setPrompt("Completely new prompt");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -197,13 +197,13 @@ describe("HookManager", () => {
 				name: "plugin-1",
 				beforePrompt: async (context) => {
 					context.addToPrompt(" [Plugin 1]");
-				}
+				},
 			});
 			const plugin2 = createMockPlugin({
 				name: "plugin-2",
 				beforePrompt: async (context) => {
 					context.addToPrompt(" [Plugin 2]");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin1), createLoadedPlugin(plugin2)], mockLogger);
 
@@ -220,13 +220,13 @@ describe("HookManager", () => {
 				name: "failing",
 				beforePrompt: async () => {
 					throw new Error("Plugin error");
-				}
+				},
 			});
 			const workingPlugin = createMockPlugin({
 				name: "working",
 				beforePrompt: async (context) => {
 					context.addToPrompt(" [Working]");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(failingPlugin), createLoadedPlugin(workingPlugin)], mockLogger);
 
@@ -250,7 +250,7 @@ describe("HookManager", () => {
 					receivedDiff = context.diff;
 					receivedPrompt = context.prompt;
 					receivedContext = context.reviewContext;
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -292,8 +292,8 @@ describe("HookManager", () => {
 			// Given
 			const plugin = createMockPlugin({
 				afterResponse: async (context) => {
-					context.setResponse(context.response + " [Modified]");
-				}
+					context.setResponse(`${context.response} [Modified]`);
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -309,14 +309,14 @@ describe("HookManager", () => {
 			const plugin1 = createMockPlugin({
 				name: "p1",
 				afterResponse: async (context) => {
-					context.setResponse(context.response + " [P1]");
-				}
+					context.setResponse(`${context.response} [P1]`);
+				},
 			});
 			const plugin2 = createMockPlugin({
 				name: "p2",
 				afterResponse: async (context) => {
-					context.setResponse(context.response + " [P2]");
-				}
+					context.setResponse(`${context.response} [P2]`);
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin1), createLoadedPlugin(plugin2)], mockLogger);
 
@@ -333,7 +333,7 @@ describe("HookManager", () => {
 				name: "failing",
 				afterResponse: async () => {
 					throw new Error("Error");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(failingPlugin)], mockLogger);
 
@@ -356,7 +356,7 @@ describe("HookManager", () => {
 					receivedModel = context.model;
 					receivedProvider = context.providerName;
 					receivedContext = context.reviewContext;
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -399,7 +399,7 @@ describe("HookManager", () => {
 			const plugin = createMockPlugin({
 				beforeVerdict: async (context) => {
 					context.setVerdict("block");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -416,13 +416,13 @@ describe("HookManager", () => {
 				name: "p1",
 				beforeVerdict: async (context) => {
 					context.setVerdict("approve");
-				}
+				},
 			});
 			const plugin2 = createMockPlugin({
 				name: "p2",
 				beforeVerdict: async (context) => {
 					context.setVerdict("block");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin1), createLoadedPlugin(plugin2)], mockLogger);
 
@@ -439,7 +439,7 @@ describe("HookManager", () => {
 				name: "failing",
 				beforeVerdict: async () => {
 					throw new Error("Error");
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(failingPlugin)], mockLogger);
 
@@ -460,7 +460,7 @@ describe("HookManager", () => {
 				beforeVerdict: async (context) => {
 					receivedResponse = context.response;
 					receivedVerdict = context.verdict;
-				}
+				},
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -474,7 +474,7 @@ describe("HookManager", () => {
 
 		test("should support all verdict types", async () => {
 			// Given
-			const verdicts: Array<"approve" | "request-changes" | "block" | "unknown"> = ["approve", "request-changes", "block", "unknown"];
+			const verdicts: ("approve" | "request-changes" | "block" | "unknown")[] = ["approve", "request-changes", "block", "unknown"];
 
 			// When / Then
 			for (const verdict of verdicts) {
@@ -517,14 +517,14 @@ describe("HookManager", () => {
 					{
 						name: "cmd1",
 						description: "Command 1",
-						handler: async () => {}
+						handler: async () => {},
 					},
 					{
 						name: "cmd2",
 						description: "Command 2",
-						handler: async () => {}
-					}
-				]
+						handler: async () => {},
+					},
+				],
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin)], mockLogger);
 
@@ -542,11 +542,11 @@ describe("HookManager", () => {
 			// Given
 			const plugin1 = createMockPlugin({
 				name: "plugin-1",
-				commands: () => [{ name: "cmd-a", description: "A", handler: async () => {} }]
+				commands: () => [{ name: "cmd-a", description: "A", handler: async () => {} }],
 			});
 			const plugin2 = createMockPlugin({
 				name: "plugin-2",
-				commands: () => [{ name: "cmd-b", description: "B", handler: async () => {} }]
+				commands: () => [{ name: "cmd-b", description: "B", handler: async () => {} }],
 			});
 			const manager = new HookManager([createLoadedPlugin(plugin1), createLoadedPlugin(plugin2)], mockLogger);
 
@@ -565,11 +565,11 @@ describe("HookManager", () => {
 				name: "failing",
 				commands: () => {
 					throw new Error("Commands error");
-				}
+				},
 			});
 			const workingPlugin = createMockPlugin({
 				name: "working",
-				commands: () => [{ name: "good", description: "Good", handler: async () => {} }]
+				commands: () => [{ name: "good", description: "Good", handler: async () => {} }],
 			});
 			const manager = new HookManager([createLoadedPlugin(failingPlugin), createLoadedPlugin(workingPlugin)], mockLogger);
 

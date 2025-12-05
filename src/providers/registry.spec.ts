@@ -23,7 +23,7 @@ function createMockProvider(overrides: Partial<LLMProvider> = {}): LLMProvider {
 			return "test";
 		},
 		getDefaultModel: () => "mock-model",
-		...overrides
+		...overrides,
 	};
 }
 
@@ -37,7 +37,7 @@ function createMockProviderClass(name: string, healthy = true) {
 		private model: string;
 
 		constructor(config?: ProviderConfig) {
-			this.model = config?.defaultModel || "default-model";
+			this.model = config?.defaultModel ?? "default-model";
 		}
 
 		async checkHealth() {
@@ -329,11 +329,11 @@ describe("ProviderRegistry", () => {
 			// Given
 			const unhealthyProvider = createMockProvider({
 				name: "unhealthy",
-				checkHealth: async () => false
+				checkHealth: async () => false,
 			});
 			const healthyProvider = createMockProvider({
 				name: "healthy",
-				checkHealth: async () => true
+				checkHealth: async () => true,
 			});
 
 			registry.register(unhealthyProvider);
@@ -350,11 +350,11 @@ describe("ProviderRegistry", () => {
 			// Given
 			const provider1 = createMockProvider({
 				name: "first",
-				checkHealth: async () => false
+				checkHealth: async () => false,
 			});
 			const provider2 = createMockProvider({
 				name: "second",
-				checkHealth: async () => false
+				checkHealth: async () => false,
 			});
 
 			registry.register(provider1);
@@ -373,11 +373,11 @@ describe("ProviderRegistry", () => {
 				name: "throwing",
 				checkHealth: async () => {
 					throw new Error("Health check failed");
-				}
+				},
 			});
 			const healthyProvider = createMockProvider({
 				name: "healthy",
-				checkHealth: async () => true
+				checkHealth: async () => true,
 			});
 
 			registry.register(throwingProvider);

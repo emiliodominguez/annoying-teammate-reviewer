@@ -384,7 +384,7 @@ export function buildBatchReviewPrompt(
 	diff: string,
 	context: ReviewContext,
 	batchInfo: { current: number; total: number; files: string[] },
-	previousIssues: string[]
+	previousIssues: string[],
 ): string {
 	// Inject previous issues if any exist
 	// This is "context carryover" - giving the model memory across batches

@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globa
 import { GeminiProvider } from "./gemini";
 
 // Mock the @google/generative-ai module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockSendMessageStream = jest.fn<() => Promise<{ stream: AsyncIterable<any> }>>();
 
 jest.unstable_mockModule("@google/generative-ai", () => ({
@@ -15,11 +15,11 @@ jest.unstable_mockModule("@google/generative-ai", () => ({
 		getGenerativeModel() {
 			return {
 				startChat: () => ({
-					sendMessageStream: mockSendMessageStream
-				})
+					sendMessageStream: mockSendMessageStream,
+				}),
 			};
 		}
-	}
+	},
 }));
 
 describe("GeminiProvider", () => {
@@ -51,7 +51,7 @@ describe("GeminiProvider", () => {
 			// Given
 			const configuredProvider = new GeminiProvider({
 				apiKey: "custom-key",
-				defaultModel: "gemini-1.5-pro"
+				defaultModel: "gemini-1.5-pro",
 			});
 
 			// When / Then
@@ -214,7 +214,7 @@ describe("GeminiProvider", () => {
 
 			// When / Then
 			await expect(providerWithoutKey.streamResponse("Test prompt", jest.fn())).rejects.toThrow(
-				"GOOGLE_AI_API_KEY environment variable is required"
+				"GOOGLE_AI_API_KEY environment variable is required",
 			);
 		});
 
@@ -227,7 +227,7 @@ describe("GeminiProvider", () => {
 					for (const chunk of mockStream) {
 						yield chunk;
 					}
-				})()
+				})(),
 			});
 
 			const onChunk = jest.fn();
@@ -247,7 +247,7 @@ describe("GeminiProvider", () => {
 			mockSendMessageStream.mockResolvedValueOnce({
 				stream: (async function* () {
 					yield { text: () => "test" };
-				})()
+				})(),
 			});
 
 			// When
@@ -265,7 +265,7 @@ describe("GeminiProvider", () => {
 			mockSendMessageStream.mockResolvedValueOnce({
 				stream: (async function* () {
 					yield { text: () => "test" };
-				})()
+				})(),
 			});
 
 			// When
@@ -280,7 +280,7 @@ describe("GeminiProvider", () => {
 			mockSendMessageStream.mockResolvedValueOnce({
 				stream: (async function* () {
 					yield { text: () => "test" };
-				})()
+				})(),
 			});
 
 			// When
@@ -299,7 +299,7 @@ describe("GeminiProvider", () => {
 					for (const chunk of mockStream) {
 						yield chunk;
 					}
-				})()
+				})(),
 			});
 
 			const onChunk = jest.fn();
@@ -317,7 +317,7 @@ describe("GeminiProvider", () => {
 			mockSendMessageStream.mockResolvedValue({
 				stream: (async function* () {
 					yield { text: () => "test" };
-				})()
+				})(),
 			});
 
 			// When - Call streamResponse multiple times

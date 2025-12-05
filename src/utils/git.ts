@@ -239,7 +239,7 @@ export function createDiffForUntrackedFile(filePath: string): string {
 			"new file mode 100644",
 			"--- /dev/null",
 			`+++ b/${filePath}`,
-			`@@ -0,0 +1,${lines.length} @@`
+			`@@ -0,0 +1,${lines.length} @@`,
 		].join("\n");
 
 		// Add + prefix to each line (showing as added)
@@ -294,7 +294,7 @@ export function getUntrackedDiff(): string {
  * @returns Unified diff output as a string
  */
 export function getBranchDiff(targetBranch?: string): string {
-	const target = targetBranch || getMainBranch();
+	const target = targetBranch ?? getMainBranch();
 
 	return execSync(`git diff ${target}...HEAD`, { encoding: "utf-8" });
 }
@@ -352,7 +352,7 @@ export function getChangedFiles(targetBranch?: string): string[] {
  * @returns Newline-separated list of commit summaries, or empty string if none
  */
 export function getBranchCommits(targetBranch?: string): string {
-	const target = targetBranch || getMainBranch();
+	const target = targetBranch ?? getMainBranch();
 
 	try {
 		return execSync(`git log ${target}..HEAD --oneline`, { encoding: "utf-8" }).trim();
@@ -515,19 +515,19 @@ export function getDiff(options: ReviewOptions = {}): string {
 export function getReviewContext(options: ReviewOptions = {}): ReviewContext {
 	const currentBranch = getCurrentBranch();
 	const targetBranch = typeof options.branch === "string" ? options.branch : undefined;
-	const files = options.branch ? getChangedFiles(targetBranch || getMainBranch()) : getChangedFiles();
+	const files = options.branch ? getChangedFiles(targetBranch ?? getMainBranch()) : getChangedFiles();
 
 	const context: ReviewContext = {
 		branch: currentBranch,
 		files,
 		fileCount: files.length,
-		mode: "working tree"
+		mode: "working tree",
 	};
 
 	if (options.staged) {
 		context.mode = "staged changes";
 	} else if (options.branch) {
-		const target = targetBranch || getMainBranch();
+		const target = targetBranch ?? getMainBranch();
 
 		context.mode = `branch diff (${target}...HEAD)`;
 		context.commits = getBranchCommits(target);

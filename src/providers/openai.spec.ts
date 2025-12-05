@@ -7,17 +7,17 @@ import { afterEach, beforeEach, describe, expect, jest, test } from "@jest/globa
 import { OpenAIProvider } from "./openai";
 
 // Mock the openai module
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 const mockCreate = jest.fn<() => Promise<AsyncIterable<any>>>();
 
 jest.unstable_mockModule("openai", () => ({
 	default: class MockOpenAI {
 		chat = {
 			completions: {
-				create: mockCreate
-			}
+				create: mockCreate,
+			},
 		};
-	}
+	},
 }));
 
 describe("OpenAIProvider", () => {
@@ -50,7 +50,7 @@ describe("OpenAIProvider", () => {
 			const configuredProvider = new OpenAIProvider({
 				apiKey: "custom-key",
 				baseUrl: "http://custom.api.com",
-				defaultModel: "gpt-4-turbo"
+				defaultModel: "gpt-4-turbo",
 			});
 
 			// When / Then
@@ -188,7 +188,7 @@ describe("OpenAIProvider", () => {
 
 			// When / Then
 			await expect(providerWithoutKey.streamResponse("Test prompt", jest.fn())).rejects.toThrow(
-				"OPENAI_API_KEY environment variable is required"
+				"OPENAI_API_KEY environment variable is required",
 			);
 		});
 
@@ -197,7 +197,7 @@ describe("OpenAIProvider", () => {
 			const mockChunks = [
 				{ choices: [{ delta: { content: "Hello" } }] },
 				{ choices: [{ delta: { content: " World" } }] },
-				{ choices: [{ delta: { content: "!" } }] }
+				{ choices: [{ delta: { content: "!" } }] },
 			];
 
 			mockCreate.mockResolvedValueOnce(
@@ -205,7 +205,7 @@ describe("OpenAIProvider", () => {
 					for (const chunk of mockChunks) {
 						yield chunk;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -225,7 +225,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -234,8 +234,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "gpt-4o"
-				})
+					model: "gpt-4o",
+				}),
 			);
 		});
 
@@ -244,7 +244,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -253,8 +253,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "gpt-4-turbo"
-				})
+					model: "gpt-4-turbo",
+				}),
 			);
 		});
 
@@ -263,7 +263,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -272,8 +272,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					max_tokens: 1000
-				})
+					max_tokens: 1000,
+				}),
 			);
 		});
 
@@ -282,7 +282,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -291,8 +291,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					temperature: 0.5
-				})
+					temperature: 0.5,
+				}),
 			);
 		});
 
@@ -301,7 +301,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -311,8 +311,8 @@ describe("OpenAIProvider", () => {
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
 					max_tokens: 2048,
-					temperature: 0.7
-				})
+					temperature: 0.7,
+				}),
 			);
 		});
 
@@ -321,7 +321,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -330,8 +330,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					messages: [{ role: "user", content: "My test prompt" }]
-				})
+					messages: [{ role: "user", content: "My test prompt" }],
+				}),
 			);
 		});
 
@@ -340,7 +340,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When
@@ -349,8 +349,8 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					stream: true
-				})
+					stream: true,
+				}),
 			);
 		});
 
@@ -360,7 +360,7 @@ describe("OpenAIProvider", () => {
 				{ choices: [{ delta: {} }] }, // No content
 				{ choices: [{ delta: { content: "Hello" } }] },
 				{ choices: [{ delta: { content: undefined } }] }, // Undefined content
-				{ choices: [{ delta: { content: "World" } }] }
+				{ choices: [{ delta: { content: "World" } }] },
 			];
 
 			mockCreate.mockResolvedValueOnce(
@@ -368,7 +368,7 @@ describe("OpenAIProvider", () => {
 					for (const chunk of mockChunks) {
 						yield chunk;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -383,17 +383,14 @@ describe("OpenAIProvider", () => {
 
 		test("should handle empty choices array", async () => {
 			// Given
-			const mockChunks = [
-				{ choices: [] },
-				{ choices: [{ delta: { content: "Hello" } }] }
-			];
+			const mockChunks = [{ choices: [] }, { choices: [{ delta: { content: "Hello" } }] }];
 
 			mockCreate.mockResolvedValueOnce(
 				(async function* () {
 					for (const chunk of mockChunks) {
 						yield chunk;
 					}
-				})()
+				})(),
 			);
 
 			const onChunk = jest.fn();
@@ -411,7 +408,7 @@ describe("OpenAIProvider", () => {
 			mockCreate.mockResolvedValue(
 				(async function* () {
 					yield { choices: [{ delta: { content: "test" } }] };
-				})()
+				})(),
 			);
 
 			// When - Call streamResponse multiple times

@@ -79,7 +79,7 @@ export const TOOL_DESCRIPTION = `AI code reviewer that mimics ${REVIEWER_NAME}'s
  * - Environment: `LLM_PROVIDER=claude`
  * - CLI flag: `--provider claude`
  */
-export const DEFAULT_LLM_PROVIDER = process.env.LLM_PROVIDER || "ollama";
+export const DEFAULT_LLM_PROVIDER = process.env.LLM_PROVIDER ?? "ollama";
 
 /**
  * Available LLM providers and their display names.

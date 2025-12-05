@@ -15,7 +15,7 @@ import type {
 	Logger,
 	Plugin,
 	PluginContext,
-	ReviewContext
+	ReviewContext,
 } from "./types";
 
 describe("Plugin types module", () => {
@@ -27,7 +27,7 @@ describe("Plugin types module", () => {
 				branch: "feature/test",
 				fileCount: 5,
 				commits: "abc123: Initial commit",
-				files: ["src/index.ts", "src/utils.ts"]
+				files: ["src/index.ts", "src/utils.ts"],
 			};
 
 			// When / Then
@@ -43,7 +43,7 @@ describe("Plugin types module", () => {
 			const context: ReviewContext = {
 				mode: "branch comparison",
 				branch: "main",
-				fileCount: 1
+				fileCount: 1,
 			};
 
 			// When / Then
@@ -62,7 +62,7 @@ describe("Plugin types module", () => {
 				reviewContext: {
 					mode: "staged",
 					branch: "main",
-					fileCount: 1
+					fileCount: 1,
 				},
 				prompt: "Review this code",
 				addToPrompt: (text: string) => {
@@ -70,7 +70,7 @@ describe("Plugin types module", () => {
 				},
 				setPrompt: (newPrompt: string) => {
 					modifiedPrompt = newPrompt;
-				}
+				},
 			};
 
 			// When
@@ -94,7 +94,7 @@ describe("Plugin types module", () => {
 				},
 				setPrompt: (newPrompt) => {
 					currentPrompt = newPrompt;
-				}
+				},
 			};
 
 			// When
@@ -116,7 +116,7 @@ describe("Plugin types module", () => {
 				providerName: "ollama",
 				setResponse: (newResponse: string) => {
 					modifiedResponse = newResponse;
-				}
+				},
 			};
 
 			// When
@@ -139,7 +139,7 @@ describe("Plugin types module", () => {
 				verdict: "approve",
 				setVerdict: (newVerdict) => {
 					currentVerdict = newVerdict;
-				}
+				},
 			};
 
 			// When
@@ -153,14 +153,14 @@ describe("Plugin types module", () => {
 
 		test("should support all verdict types", () => {
 			// Given
-			const verdicts: Array<"approve" | "request-changes" | "block" | "unknown"> = ["approve", "request-changes", "block", "unknown"];
+			const verdicts: ("approve" | "request-changes" | "block" | "unknown")[] = ["approve", "request-changes", "block", "unknown"];
 
 			// When / Then
 			for (const verdict of verdicts) {
 				const context: BeforeVerdictContext = {
 					response: "test",
 					verdict,
-					setVerdict: () => {}
+					setVerdict: () => {},
 				};
 
 				expect(context.verdict).toEqual(verdict);
@@ -178,12 +178,12 @@ describe("Plugin types module", () => {
 					{
 						flags: "--dry-run",
 						description: "Show what would be fixed without making changes",
-						defaultValue: false
-					}
+						defaultValue: false,
+					},
 				],
 				handler: async (args) => {
 					expect(args).toBeDefined();
-				}
+				},
 			};
 
 			// When / Then
@@ -198,7 +198,7 @@ describe("Plugin types module", () => {
 			const command: CommandDefinition = {
 				name: "simple-command",
 				description: "A simple command",
-				handler: async () => {}
+				handler: async () => {},
 			};
 
 			// When / Then
@@ -215,7 +215,7 @@ describe("Plugin types module", () => {
 				info: (msg) => logs.push(`INFO: ${msg}`),
 				warn: (msg) => logs.push(`WARN: ${msg}`),
 				error: (msg) => logs.push(`ERROR: ${msg}`),
-				debug: (msg) => logs.push(`DEBUG: ${msg}`)
+				debug: (msg) => logs.push(`DEBUG: ${msg}`),
 			};
 
 			// When
@@ -238,17 +238,17 @@ describe("Plugin types module", () => {
 					providerName: "ollama",
 					model: "llama3.2",
 					isQuiet: false,
-					isJson: false
+					isJson: false,
 				},
 				logger: {
 					info: () => {},
 					warn: () => {},
 					error: () => {},
-					debug: () => {}
+					debug: () => {},
 				},
 				registerProvider: (provider) => {
 					registeredProviders.push(provider);
-				}
+				},
 			};
 
 			// When
@@ -266,7 +266,7 @@ describe("Plugin types module", () => {
 			// Given
 			const plugin: Plugin = {
 				name: "minimal-plugin",
-				version: "1.0.0"
+				version: "1.0.0",
 			};
 
 			// When / Then
@@ -289,7 +289,7 @@ describe("Plugin types module", () => {
 					context.addToPrompt(" Check for security issues.");
 				},
 				afterResponse: async (context) => {
-					context.setResponse(context.response + "\n---");
+					context.setResponse(`${context.response}\n---`);
 				},
 				beforeVerdict: async (context) => {
 					if (context.response.includes("security")) {
@@ -300,10 +300,10 @@ describe("Plugin types module", () => {
 					{
 						name: "custom",
 						description: "Custom command",
-						handler: async () => {}
-					}
+						handler: async () => {},
+					},
 				],
-				providers: () => []
+				providers: () => [],
 			};
 
 			// When / Then
@@ -339,14 +339,14 @@ describe("Plugin types module", () => {
 				},
 				beforeVerdict: async () => {
 					beforeVerdictCalled = true;
-				}
+				},
 			};
 
 			// When
 			await plugin.init!({
 				config: { providerName: "test", model: "test", isQuiet: false, isJson: false },
 				logger: { info: () => {}, warn: () => {}, error: () => {}, debug: () => {} },
-				registerProvider: () => {}
+				registerProvider: () => {},
 			});
 
 			await plugin.beforePrompt!({
@@ -354,7 +354,7 @@ describe("Plugin types module", () => {
 				reviewContext: { mode: "", branch: "", fileCount: 0 },
 				prompt: "",
 				addToPrompt: () => {},
-				setPrompt: () => {}
+				setPrompt: () => {},
 			});
 
 			await plugin.afterResponse!({
@@ -362,13 +362,13 @@ describe("Plugin types module", () => {
 				reviewContext: { mode: "", branch: "", fileCount: 0 },
 				model: "",
 				providerName: "",
-				setResponse: () => {}
+				setResponse: () => {},
 			});
 
 			await plugin.beforeVerdict!({
 				response: "",
 				verdict: "unknown",
-				setVerdict: () => {}
+				setVerdict: () => {},
 			});
 
 			// Then
@@ -387,15 +387,15 @@ describe("Plugin types module", () => {
 					{
 						name: "cmd1",
 						description: "Command 1",
-						handler: async () => {}
+						handler: async () => {},
 					},
 					{
 						name: "cmd2",
 						description: "Command 2",
 						options: [{ flags: "-v", description: "Verbose" }],
-						handler: async () => {}
-					}
-				]
+						handler: async () => {},
+					},
+				],
 			};
 
 			// When

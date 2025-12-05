@@ -149,8 +149,8 @@ export class ClaudeProvider implements LLMProvider {
 	 * @param config - Provider configuration (API key required)
 	 */
 	constructor(config?: ProviderConfig) {
-		this.apiKey = config?.apiKey || process.env.ANTHROPIC_API_KEY;
-		this.defaultModel = config?.defaultModel || process.env.CLAUDE_DEFAULT_MODEL || DEFAULT_MODEL;
+		this.apiKey = config?.apiKey ?? process.env.ANTHROPIC_API_KEY;
+		this.defaultModel = config?.defaultModel ?? process.env.CLAUDE_DEFAULT_MODEL ?? DEFAULT_MODEL;
 	}
 
 	/**
@@ -184,7 +184,7 @@ export class ClaudeProvider implements LLMProvider {
 		} catch (error) {
 			if ((error as NodeJS.ErrnoException).code === "ERR_MODULE_NOT_FOUND") {
 				throw new Error(
-					"@anthropic-ai/sdk is not installed. Run: npm install @anthropic-ai/sdk\n" + "Or use a different provider: --provider ollama"
+					"@anthropic-ai/sdk is not installed. Run: npm install @anthropic-ai/sdk\n" + "Or use a different provider: --provider ollama",
 				);
 			}
 
@@ -241,7 +241,7 @@ export class ClaudeProvider implements LLMProvider {
 	async isModelAvailable(modelName: string): Promise<boolean> {
 		const models = await this.getAvailableModels();
 
-		return models.some((model) => model.includes(modelName) || modelName.includes(model));
+		return models.some((model) => model.includes(modelName) ?? modelName.includes(model));
 	}
 
 	/**
@@ -273,7 +273,7 @@ export class ClaudeProvider implements LLMProvider {
 	 */
 	async streamResponse(prompt: string, onChunk: (chunk: string) => void, options?: GenerateOptions): Promise<string> {
 		const client = await this.getClient();
-		const model = options?.model || this.defaultModel;
+		const model = options?.model ?? this.defaultModel;
 
 		// Claude has a separate system parameter, but for simplicity
 		// we'll use the combined prompt approach (works fine)
@@ -281,7 +281,7 @@ export class ClaudeProvider implements LLMProvider {
 			model,
 			max_tokens: options?.maxTokens ?? 2048,
 			messages: [{ role: "user", content: prompt }],
-			stream: true
+			stream: true,
 		});
 
 		let fullResponse = "";
