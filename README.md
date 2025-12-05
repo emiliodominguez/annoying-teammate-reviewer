@@ -2,6 +2,15 @@
 
 AI-powered code reviewer that mimics your annoying teammate's review style. Supports multiple LLM providers: Ollama (local), Claude, OpenAI, and Gemini.
 
+> **Note:** This is a learning/exploratory project for understanding AI integration, prompt engineering, and building AI-powered developer tools. It may contain bugs and is under active development. The extensive code comments throughout the codebase are intentional—they document AI/LLM concepts, prompt engineering patterns, and design decisions for educational purposes.
+
+## Project Status
+
+- **Stage:** Experimental / Learning
+- **Purpose:** Exploring AI tooling, prompt engineering, and LLM integration patterns
+- **Stability:** Use at your own risk
+- **Contributions:** Welcome! See [Contributing](#contributing) below
+
 ## Supported Providers
 
 | Provider | Description                             | Requires         |
@@ -444,3 +453,69 @@ Some models hallucinate generic advice instead of reviewing the actual diff. Sol
 1. **Try llama3.2** - it follows formatting instructions more reliably: `--model llama3.2`
 2. **Make sure there's actually a diff** - run `git diff HEAD` to verify
 3. **Review smaller changes** - large diffs can confuse the model
+
+## Learning Goals
+
+This project explores:
+
+- **Prompt Engineering** - Persona design, system prompts, output formatting, and how to guide LLM responses
+- **LLM Integration Patterns** - Building provider-agnostic AI applications with multiple backends
+- **AI Tooling Development** - Creating practical developer tools powered by LLMs
+- **Plugin Architecture** - Dynamic module loading and extensibility for AI providers
+
+## Code Architecture
+
+The codebase is heavily commented to explain AI concepts as they appear:
+
+| Directory        | Purpose                              | AI Concepts Covered                            |
+| ---------------- | ------------------------------------ | ---------------------------------------------- |
+| `src/core/`      | Core logic (prompts, config, review) | Persona prompting, instruction design, context |
+| `src/providers/` | LLM provider implementations         | API integration, streaming, token management   |
+| `src/plugins/`   | Plugin system                        | Dynamic provider loading, extensibility        |
+| `src/utils/`     | Utilities (git, formatting)          | Context preparation, output parsing            |
+
+## Contributing
+
+This is a learning project, but contributions are welcome:
+
+- **Bug fixes** - If you find something broken, please open an issue or PR
+- **New providers** - Want to add support for another LLM? Check `src/providers/`
+- **Documentation** - Improvements to AI concept explanations always appreciated
+- **Tests** - More test coverage is always good
+
+### Development Setup
+
+```bash
+# Clone and install
+git clone https://github.com/emiliodominguez/annoying-teammate-reviewer.git
+cd annoying-teammate-reviewer
+npm install
+
+# Run in development mode
+npm run dev
+
+# Run tests
+npm test
+
+# Lint and format
+npm run lint:fix
+npm run format
+
+# Commit using commitizen (interactive)
+npm run commit
+```
+
+### Commit Convention
+
+This project uses [Conventional Commits](https://www.conventionalcommits.org/). Commits are enforced via commitlint and husky hooks.
+
+```
+type(scope): subject
+
+# Types: feat, fix, refactor, test, docs, chore, style, perf, ci, build, revert
+# Scopes: core, providers, plugins, utils, cli, deps, config
+```
+
+## License
+
+MIT
