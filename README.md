@@ -133,7 +133,7 @@ npm run review -- --provider gemini
 
 ```bash
 npx tsx src/index.ts --model qwen3
-npx tsx src/index.ts --provider claude --model claude-opus-4-5-20251124
+npx tsx src/index.ts --provider claude --model claude-opus-4-5-20251101
 npx tsx src/index.ts --provider openai --model gpt-4.1-mini
 ```
 
