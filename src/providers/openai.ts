@@ -15,13 +15,12 @@
  * ## AI Concept: GPT Model Tiers (2025)
  *
  * OpenAI offers different model families:
- * - **GPT-5.1**: Flagship reasoning model, supersedes GPT-5 (Aug 2025)
- * - **GPT-5 mini/nano**: Faster, affordable reasoning alternatives
  * - **GPT-4.1**: Best for coding & long-context, 1M token window (Apr 2025)
  * - **GPT-4.1 mini/nano**: Cheaper variants of 4.1
- * - **o3/o4-mini**: Specialized reasoning models for math, science, coding
+ * - **GPT-4o/GPT-4o-mini**: Multimodal flagship models
+ * - **o3/o4-mini**: Reasoning models for math, science, coding
  *
- * Note: GPT-4.5 Preview deprecated July 2025, GPT-4o largely replaced by GPT-4.1 in API.
+ * Note: GPT-4.5 Preview deprecated July 2025.
  *
  * For code review, GPT-4.1 is recommended for its strong coding
  * performance and massive 1M token context window.
@@ -181,14 +180,14 @@ export class OpenAIProvider implements LLMProvider {
 	 * - Enterprise: All models + higher limits
 	 *
 	 * Current model families:
-	 * - GPT-5.x: Flagship reasoning (5.1, 5-mini, 5-nano)
 	 * - GPT-4.1: Best for coding (4.1, 4.1-mini, 4.1-nano)
-	 * - o-series: Specialized reasoning (o3, o4-mini)
+	 * - GPT-4o: Multimodal flagship (4o, 4o-mini)
+	 * - o-series: Reasoning models (o3, o4-mini)
 	 *
 	 * @see https://platform.openai.com/docs/models
 	 */
 	getAvailableModels(): Promise<string[]> {
-		return Promise.resolve(["gpt-5.1", "gpt-5-mini", "gpt-5-nano", "gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "o4-mini", "o3"]);
+		return Promise.resolve(["gpt-4.1", "gpt-4.1-mini", "gpt-4.1-nano", "gpt-4o", "gpt-4o-mini", "o3", "o4-mini"]);
 	}
 
 	/**
