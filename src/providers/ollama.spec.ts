@@ -27,7 +27,7 @@ describe("OllamaProvider", () => {
 			// When / Then
 			expect(defaultProvider.name).toEqual("ollama");
 			expect(defaultProvider.displayName).toEqual("Ollama");
-			expect(defaultProvider.getDefaultModel()).toEqual("codellama");
+			expect(defaultProvider.getDefaultModel()).toEqual("deepcoder");
 		});
 
 		test("should use config values when provided", () => {
@@ -152,7 +152,7 @@ describe("OllamaProvider", () => {
 				json: async () => ({
 					models: [
 						{ name: "llama3.2:latest", modified_at: "2024-01-01", size: 1000 },
-						{ name: "codellama:7b", modified_at: "2024-01-01", size: 2000 },
+						{ name: "deepcoder:7b", modified_at: "2024-01-01", size: 2000 },
 						{ name: "mistral:latest", modified_at: "2024-01-01", size: 3000 },
 					],
 				}),
@@ -162,7 +162,7 @@ describe("OllamaProvider", () => {
 			const result = await provider.getAvailableModels();
 
 			// Then
-			expect(result).toEqual(["llama3.2:latest", "codellama:7b", "mistral:latest"]);
+			expect(result).toEqual(["llama3.2:latest", "deepcoder:7b", "mistral:latest"]);
 		});
 
 		test("should return empty array when no models available", async () => {
@@ -222,7 +222,7 @@ describe("OllamaProvider", () => {
 			mockFetch.mockResolvedValueOnce({
 				ok: true,
 				json: async () => ({
-					models: [{ name: "llama3.2:latest" }, { name: "codellama:7b" }],
+					models: [{ name: "llama3.2:latest" }, { name: "deepcoder:7b" }],
 				}),
 			} as Response);
 
@@ -363,7 +363,7 @@ describe("OllamaProvider", () => {
 			// Then
 			const callBody = JSON.parse(mockFetch.mock.calls[0][1]?.body as string);
 
-			expect(callBody.model).toEqual("codellama");
+			expect(callBody.model).toEqual("deepcoder");
 		});
 
 		test("should use provided model when specified", async () => {
@@ -548,7 +548,7 @@ describe("OllamaProvider", () => {
 			const result = provider.getDefaultModel();
 
 			// Then
-			expect(result).toEqual("codellama");
+			expect(result).toEqual("deepcoder");
 		});
 
 		test("should return configured default model", () => {

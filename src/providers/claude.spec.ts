@@ -8,7 +8,7 @@ import { ClaudeProvider } from "./claude";
 
 // Mock the @anthropic-ai/sdk module
 
-const mockCreate = jest.fn<() => Promise<AsyncIterable<any>>>();
+const mockCreate = jest.fn<(options: unknown) => Promise<AsyncIterable<unknown>>>();
 
 jest.unstable_mockModule("@anthropic-ai/sdk", () => ({
 	default: class MockAnthropic {
@@ -40,7 +40,7 @@ describe("ClaudeProvider", () => {
 			// When / Then
 			expect(defaultProvider.name).toEqual("claude");
 			expect(defaultProvider.displayName).toEqual("Claude");
-			expect(defaultProvider.getDefaultModel()).toEqual("claude-sonnet-4-20250514");
+			expect(defaultProvider.getDefaultModel()).toEqual("claude-sonnet-4-5-20250929");
 		});
 
 		test("should use config values when provided", () => {
@@ -121,10 +121,9 @@ describe("ClaudeProvider", () => {
 			const result = await provider.getAvailableModels();
 
 			// Then
-			expect(result).toContain("claude-sonnet-4-20250514");
-			expect(result).toContain("claude-3-5-sonnet-20241022");
-			expect(result).toContain("claude-3-5-haiku-20241022");
-			expect(result).toContain("claude-3-opus-20240229");
+			expect(result).toContain("claude-opus-4-5-20251101");
+			expect(result).toContain("claude-sonnet-4-5-20250929");
+			expect(result).toContain("claude-haiku-4-5-20251001");
 		});
 
 		test("should return non-empty array", async () => {
@@ -141,7 +140,7 @@ describe("ClaudeProvider", () => {
 		test("should return true for exact model name match", async () => {
 			// Given
 			// When
-			const result = await provider.isModelAvailable("claude-3-5-sonnet-20241022");
+			const result = await provider.isModelAvailable("claude-sonnet-4-5-20250929");
 
 			// Then
 			expect(result).toEqual(true);
@@ -150,7 +149,7 @@ describe("ClaudeProvider", () => {
 		test("should return true for partial model name match", async () => {
 			// Given
 			// When
-			const result = await provider.isModelAvailable("claude-3-5-sonnet");
+			const result = await provider.isModelAvailable("claude-sonnet-4");
 
 			// Then
 			expect(result).toEqual(true);
@@ -230,7 +229,7 @@ describe("ClaudeProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "claude-sonnet-4-20250514",
+					model: "claude-sonnet-4-5-20250929",
 				}),
 			);
 		});
@@ -408,7 +407,7 @@ describe("ClaudeProvider", () => {
 			const result = provider.getDefaultModel();
 
 			// Then
-			expect(result).toEqual("claude-sonnet-4-20250514");
+			expect(result).toEqual("claude-sonnet-4-5-20250929");
 		});
 
 		test("should return configured default model", () => {

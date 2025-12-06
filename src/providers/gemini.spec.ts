@@ -8,7 +8,7 @@ import { GeminiProvider } from "./gemini";
 
 // Mock the @google/generative-ai module
 
-const mockSendMessageStream = jest.fn<() => Promise<{ stream: AsyncIterable<any> }>>();
+const mockSendMessageStream = jest.fn<(message: string) => Promise<{ stream: AsyncIterable<unknown> }>>();
 
 jest.unstable_mockModule("@google/generative-ai", () => ({
 	GoogleGenerativeAI: class MockGoogleGenerativeAI {
@@ -44,7 +44,7 @@ describe("GeminiProvider", () => {
 			// When / Then
 			expect(defaultProvider.name).toEqual("gemini");
 			expect(defaultProvider.displayName).toEqual("Gemini");
-			expect(defaultProvider.getDefaultModel()).toEqual("gemini-2.0-flash");
+			expect(defaultProvider.getDefaultModel()).toEqual("gemini-2.5-flash");
 		});
 
 		test("should use config values when provided", () => {
@@ -150,11 +150,10 @@ describe("GeminiProvider", () => {
 			const result = await provider.getAvailableModels();
 
 			// Then
+			expect(result).toContain("gemini-2.5-pro");
+			expect(result).toContain("gemini-2.5-flash");
+			expect(result).toContain("gemini-2.5-flash-lite");
 			expect(result).toContain("gemini-2.0-flash");
-			expect(result).toContain("gemini-2.0-flash-lite");
-			expect(result).toContain("gemini-1.5-flash");
-			expect(result).toContain("gemini-1.5-flash-8b");
-			expect(result).toContain("gemini-1.5-pro");
 		});
 
 		test("should return non-empty array", async () => {
@@ -171,7 +170,7 @@ describe("GeminiProvider", () => {
 		test("should return true for exact model name match", async () => {
 			// Given
 			// When
-			const result = await provider.isModelAvailable("gemini-2.0-flash");
+			const result = await provider.isModelAvailable("gemini-2.5-flash");
 
 			// Then
 			expect(result).toEqual(true);
@@ -180,7 +179,7 @@ describe("GeminiProvider", () => {
 		test("should return true for partial model name match", async () => {
 			// Given
 			// When
-			const result = await provider.isModelAvailable("gemini-1.5");
+			const result = await provider.isModelAvailable("gemini-2.5");
 
 			// Then
 			expect(result).toEqual(true);
@@ -255,7 +254,7 @@ describe("GeminiProvider", () => {
 
 			// Then - Model is passed to getGenerativeModel, not sendMessageStream
 			// We verify the default model via getDefaultModel
-			expect(provider.getDefaultModel()).toEqual("gemini-2.0-flash");
+			expect(provider.getDefaultModel()).toEqual("gemini-2.5-flash");
 		});
 
 		test("should use provided model when specified", async () => {
@@ -337,7 +336,7 @@ describe("GeminiProvider", () => {
 			const result = provider.getDefaultModel();
 
 			// Then
-			expect(result).toEqual("gemini-2.0-flash");
+			expect(result).toEqual("gemini-2.5-flash");
 		});
 
 		test("should return configured default model", () => {

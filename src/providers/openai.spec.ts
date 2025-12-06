@@ -8,7 +8,7 @@ import { OpenAIProvider } from "./openai";
 
 // Mock the openai module
 
-const mockCreate = jest.fn<() => Promise<AsyncIterable<any>>>();
+const mockCreate = jest.fn<(options: unknown) => Promise<AsyncIterable<unknown>>>();
 
 jest.unstable_mockModule("openai", () => ({
 	default: class MockOpenAI {
@@ -42,7 +42,7 @@ describe("OpenAIProvider", () => {
 			// When / Then
 			expect(defaultProvider.name).toEqual("openai");
 			expect(defaultProvider.displayName).toEqual("OpenAI");
-			expect(defaultProvider.getDefaultModel()).toEqual("gpt-4o");
+			expect(defaultProvider.getDefaultModel()).toEqual("gpt-4.1");
 		});
 
 		test("should use config values when provided", () => {
@@ -125,11 +125,11 @@ describe("OpenAIProvider", () => {
 			const result = await provider.getAvailableModels();
 
 			// Then
+			expect(result).toContain("gpt-4.1");
+			expect(result).toContain("gpt-4.1-mini");
+			expect(result).toContain("gpt-4.1-nano");
 			expect(result).toContain("gpt-4o");
-			expect(result).toContain("gpt-4o-mini");
-			expect(result).toContain("gpt-4-turbo");
-			expect(result).toContain("gpt-4");
-			expect(result).toContain("gpt-3.5-turbo");
+			expect(result).toContain("o3");
 		});
 
 		test("should return non-empty array", async () => {
@@ -146,7 +146,7 @@ describe("OpenAIProvider", () => {
 		test("should return true for exact model name match", async () => {
 			// Given
 			// When
-			const result = await provider.isModelAvailable("gpt-4o");
+			const result = await provider.isModelAvailable("gpt-4.1");
 
 			// Then
 			expect(result).toEqual(true);
@@ -234,7 +234,7 @@ describe("OpenAIProvider", () => {
 			// Then
 			expect(mockCreate).toHaveBeenCalledWith(
 				expect.objectContaining({
-					model: "gpt-4o",
+					model: "gpt-4.1",
 				}),
 			);
 		});
@@ -428,7 +428,7 @@ describe("OpenAIProvider", () => {
 			const result = provider.getDefaultModel();
 
 			// Then
-			expect(result).toEqual("gpt-4o");
+			expect(result).toEqual("gpt-4.1");
 		});
 
 		test("should return configured default model", () => {
